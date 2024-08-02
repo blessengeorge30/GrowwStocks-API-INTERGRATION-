@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
 import axios from "axios";
 
-
 export default function HomeScreen({ navigation }) {
   const [data, setData] = useState({ all: [], gainers: [], losers: [] });
   const [filteredData, setFilteredData] = useState([]);
@@ -13,28 +12,25 @@ export default function HomeScreen({ navigation }) {
       .get("http://192.168.1.72:5001/stocks/gainers-losers")
       .then((response) => {
         setData({
-          all: [...response.data.gainers, ...response.data.losers],
+          all: [...response.data.gainers, ...response.data.losers], // Add any other stock data here
           gainers: response.data.gainers,
           losers: response.data.losers,
         });
-        setFilteredData([...response.data.gainers, ...response.data.losers]);
+        setFilteredData([...response.data.gainers, ...response.data.losers]); // Add any other stock data here
       })
       .catch((error) => console.error(error));
   }, []);
 
   const toggleView = (selectedView) => {
     if (view === selectedView) {
-      // If the same view is selected again, revert to showing all stocks
       setView("all");
       setFilteredData(data.all);
     } else {
-      // Otherwise, switch to the selected view
       setView(selectedView);
       setFilteredData(data[selectedView]);
     }
   };
 
-  // Function to get the image path based on the stock symbol
   const getImageSource = (symbol) => {
     switch (symbol) {
       case "AAPL":
@@ -43,13 +39,12 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/google.png");
       case "TSLA":
         return require("../assets/tesla.png");
-        case "AMZN":
-            return require("../assets/shopping.png");
-            case "MSFT":
-                return require("../assets/microsoft.png");
+      case "AMZN":
+        return require("../assets/shopping.png");
+      case "MSFT":
+        return require("../assets/microsoft.png");
       // Add cases for other symbols as needed
-    //   default:
-    //     return require("./assets/splash.png"); 
+     
     }
   };
 
@@ -118,10 +113,10 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     padding: 10,
     margin: 5,
-    marginVertical:20,
-    height:160,
+    marginVertical: 20,
+    height: 160,
     alignItems: "center",
-    justifyContent:"center",
+    justifyContent: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
@@ -181,3 +176,4 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
 });
+
