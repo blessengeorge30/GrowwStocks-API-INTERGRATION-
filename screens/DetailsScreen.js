@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TextInput } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, TextInput,TouchableOpacity } from "react-native";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -44,7 +44,9 @@ export default function DetailsScreen({ route }) {
           onChangeText={setSearchQuery}
           onSubmitEditing={handleSearch}
         />
-        <Icon name="ios-search" size={20} color="#000" onPress={handleSearch} style={styles.searchIcon} />
+        <TouchableOpacity onPress={handleSearch}>
+            <Image source={require('../assets/search.png')} style={styles.searchIcon} />
+          </TouchableOpacity>
       </View>
 
       <View style={styles.header}>
@@ -149,10 +151,12 @@ const styles = StyleSheet.create({
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
-    borderBottomWidth: 1,
+    borderWidth: 0.7,
     borderColor: "#ccc",
     marginBottom: 20,
-    width:'40%',
+    width:'50%',
+    alignSelf:'flex-end',
+    borderRadius:10
     
   },
   searchInput: {
@@ -162,6 +166,10 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
+    height:12,
+    width:12,
+    marginRight:8,
+    opacity:0.7
   },
   header: {
     flexDirection: "row",
