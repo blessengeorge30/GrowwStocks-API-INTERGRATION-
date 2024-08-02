@@ -45,7 +45,7 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
-   
+    
     }
   };
 
@@ -67,11 +67,20 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={[styles.container, isDarkMode && styles.containerDark]}>
-      <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-      </TouchableOpacity>
-
-      <Switch value={isDarkMode} onValueChange={toggleTheme} />
+      <View style={[styles.header, isDarkMode && styles.headerDark]}>
+        <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
+          <Image source={require('../assets/logo.png')} style={styles.logo} />
+        </TouchableOpacity>
+        
+       
+      </View>
+     <Switch 
+  value={isDarkMode} 
+  onValueChange={toggleTheme} 
+  trackColor={{ false: '#767577', true: '#81b0ff' }} // Change track color
+  thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'} // Change thumb color
+  style={styles.switch} 
+/>
 
       <FlatList
         data={filteredData}
@@ -81,7 +90,8 @@ export default function HomeScreen({ navigation }) {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
       />
-      <View style={styles.buttonContainer}>
+      
+      <View style={[styles.buttonContainer, isDarkMode && styles.buttonContainerDark]}>
         <TouchableOpacity
           style={[styles.button, view === "gainers" && styles.activeButton]}
           onPress={() => toggleView("gainers")}
@@ -109,7 +119,17 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   containerDark: {
-    backgroundColor: "#333",
+    backgroundColor: "#000", // Black background for dark mode
+  },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center", // Center content horizontally
+    paddingVertical: 10,
+    marginTop:35
+  },
+  headerDark: {
+    backgroundColor: "#000", // Dark background for header in dark mode
   },
   listContent: {
     paddingBottom: 80,
@@ -134,7 +154,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   tileDark: {
-    backgroundColor: "#555",
+    backgroundColor: "#333", // Dark background for tiles in dark mode
   },
   symbol: {
     fontSize: 16,
@@ -143,7 +163,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   symbolDark: {
-    color: "#fff",
+    color: "#fff", // White text for symbol in dark mode
   },
   price: {
     fontSize: 14,
@@ -151,7 +171,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   priceDark: {
-    color: "#fff",
+    color: "#fff", // White text for price in dark mode
   },
   positiveChange: {
     marginTop: 5,
@@ -174,6 +194,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderColor: "#ccc",
+  },
+  buttonContainerDark: {
+    backgroundColor: "#000", // Black background for button container in dark mode
   },
   button: {
     flex: 1,
@@ -202,9 +225,9 @@ const styles = StyleSheet.create({
   logo: {
     width: 180,
     height: 50,
-    marginBottom: 20,
-    alignSelf: "center",
-    marginTop: 80,
-    marginBottom: 25,
+  },
+  switch: {
+    marginTop:-55,
+    marginLeft: 50,
   },
 });
