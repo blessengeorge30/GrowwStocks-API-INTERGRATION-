@@ -78,8 +78,9 @@ export default function HomeScreen({ navigation }) {
       <Switch 
         value={isDarkMode} 
         onValueChange={toggleTheme} 
-        trackColor={{ false: '#D6D6D6', true: '#4B9CD3' }} // Track color
-        thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'} // Thumb color
+        trackColor={{ false: '#767577', true: '#81b0ff' }} // Track color
+        thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'} // Thumb color
+        ios_backgroundColor="#3e3e3e" // iOS background color
         style={styles.switch} 
       />
     </View>
@@ -230,18 +231,18 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     alignItems: 'center',
-    margin: 10,
     padding: 10,
+    marginTop: 20,
   },
   switch: {
-    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }], // Slightly increase size
-    borderRadius: 16, // Match iPhone roundness
-    borderWidth: 1,
-    borderColor: '#D6D6D6', // Track border color
+    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], // Slightly increase size
+    borderRadius: 24, // Make the border radius larger for more rounded appearance
+    borderWidth: 2,
+    borderColor: '#d3d3d3', // Lighter border color for better visibility
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-    elevation: 2, // Elevation for Android shadow
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 4, // Elevation for Android shadow
   },
 });
