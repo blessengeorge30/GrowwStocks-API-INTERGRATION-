@@ -36,7 +36,9 @@ export default function DetailsScreen({ route }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* <Image source={require('../assets/logo.png')} style={styles.logo1} /> */}
       <View style={styles.searchContainer}>
+     
         <TextInput
           style={styles.searchInput}
           placeholder="Search symbol"
