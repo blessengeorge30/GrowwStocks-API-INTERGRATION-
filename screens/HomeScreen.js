@@ -45,8 +45,7 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
-      default:
-        return require("../assets/placeholder.png");
+   
     }
   };
 
