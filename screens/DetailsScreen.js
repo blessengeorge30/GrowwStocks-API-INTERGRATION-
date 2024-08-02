@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TextInput,TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity } from "react-native";
 import axios from "axios";
 import Icon from "react-native-vector-icons/Ionicons";
 
@@ -38,7 +38,7 @@ export default function DetailsScreen({ route }) {
     <ScrollView contentContainerStyle={styles.container}>
       {/* <Image source={require('../assets/logo.png')} style={styles.logo1} /> */}
       <View style={styles.searchContainer}>
-     
+
         <TextInput
           style={styles.searchInput}
           placeholder="Search symbol"
@@ -47,8 +47,8 @@ export default function DetailsScreen({ route }) {
           onSubmitEditing={handleSearch}
         />
         <TouchableOpacity onPress={handleSearch}>
-            <Image source={require('../assets/search.png')} style={styles.searchIcon} />
-          </TouchableOpacity>
+          <Image source={require('../assets/search.png')} style={styles.searchIcon} />
+        </TouchableOpacity>
       </View>
 
       <View style={styles.header}>
@@ -156,10 +156,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: "#ccc",
     marginBottom: 20,
-    width:'50%',
-    alignSelf:'flex-end',
-    borderRadius:10
-    
+    width: '50%',
+    alignSelf: 'flex-end',
+    borderRadius: 10
+
   },
   searchInput: {
     flex: 1,
@@ -168,10 +168,10 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
-    height:12,
-    width:12,
-    marginRight:8,
-    opacity:0.7
+    height: 12,
+    width: 12,
+    marginRight: 8,
+    opacity: 0.7
   },
   header: {
     flexDirection: "row",

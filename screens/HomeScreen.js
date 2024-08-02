@@ -43,7 +43,7 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
-      // Add cases for other symbols as needed
+
     }
   };
 
@@ -71,7 +71,7 @@ export default function HomeScreen({ navigation }) {
       <TouchableOpacity>
         <Image source={require('../assets/logo.png')} style={styles.logo} />
       </TouchableOpacity>
-     
+
       <FlatList
         data={filteredData}
         renderItem={renderItem}
@@ -80,23 +80,23 @@ export default function HomeScreen({ navigation }) {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
       />
-     <View style={styles.buttonContainer}>
-  <TouchableOpacity
-    style={[styles.button, view === "gainers" && styles.activeButton]}
-    onPress={() => toggleView("gainers")}
-  >
-    <Text style={styles.buttonText}>Top Gainers</Text>
-  </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[styles.button, view === "gainers" && styles.activeButton]}
+          onPress={() => toggleView("gainers")}
+        >
+          <Text style={styles.buttonText}>Top Gainers</Text>
+        </TouchableOpacity>
 
-  <View style={styles.divider} />
+        <View style={styles.divider} />
 
-  <TouchableOpacity
-    style={[styles.button, view === "losers" && styles.activeButton]}
-    onPress={() => toggleView("losers")}
-  >
-    <Text style={styles.buttonText}>Top Losers</Text>
-  </TouchableOpacity>
-</View>
+        <TouchableOpacity
+          style={[styles.button, view === "losers" && styles.activeButton]}
+          onPress={() => toggleView("losers")}
+        >
+          <Text style={styles.buttonText}>Top Losers</Text>
+        </TouchableOpacity>
+      </View>
 
     </View>
   );
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
   },
   divider: {
     width: 1,
-    backgroundColor: "#ccc", // Color of the divider line
-    marginVertical: 10, // Optional: adjust the vertical margin for the line
+    backgroundColor: "#ccc",
+    marginVertical: 10,
   },
   image: {
     width: 50,
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     height: 50,
     marginBottom: 20,
     alignSelf: "center",
-    marginTop:80,
-    marginBottom:25,
+    marginTop: 80,
+    marginBottom: 25,
   },
 });
