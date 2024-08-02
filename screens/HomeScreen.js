@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image ,Linking} from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Switch } from "react-native";
 import axios from "axios";
+import { useTheme } from "../ThemeContext"; // import the useTheme hook
 
 export default function HomeScreen({ navigation }) {
+  const { isDarkMode, toggleTheme } = useTheme();
   const [data, setData] = useState({ all: [], gainers: [], losers: [] });
   const [filteredData, setFilteredData] = useState([]);
   const [view, setView] = useState("all");
@@ -43,21 +45,19 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
-
+      default:
+        return require("../assets/placeholder.png");
     }
   };
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
-      style={styles.tile}
+      style={[styles.tile, isDarkMode && styles.tileDark]}
       onPress={() => navigation.navigate("Details", { symbol: item.symbol })}
     >
-      <Image
-        source={getImageSource(item.symbol)}
-        style={styles.image}
-      />
-      <Text style={styles.symbol}>{item.symbol}</Text>
-      <Text style={styles.price}>
+      <Image source={getImageSource(item.symbol)} style={styles.image} />
+      <Text style={[styles.symbol, isDarkMode && styles.symbolDark]}>{item.symbol}</Text>
+      <Text style={[styles.price, isDarkMode && styles.priceDark]}>
         ${item.closePrice.toFixed(2)}
       </Text>
       <Text style={item.percentageChange >= 0 ? styles.positiveChange : styles.negativeChange}>
@@ -67,10 +67,12 @@ export default function HomeScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isDarkMode && styles.containerDark]}>
       <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
-  <Image source={require('../assets/logo.png')} style={styles.logo} />
-</TouchableOpacity>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+      </TouchableOpacity>
+
+      <Switch value={isDarkMode} onValueChange={toggleTheme} />
 
       <FlatList
         data={filteredData}
@@ -97,7 +99,6 @@ export default function HomeScreen({ navigation }) {
           <Text style={styles.buttonText}>Top Losers</Text>
         </TouchableOpacity>
       </View>
-
     </View>
   );
 }
@@ -107,6 +108,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: "#fff",
+  },
+  containerDark: {
+    backgroundColor: "#333",
   },
   listContent: {
     paddingBottom: 80,
@@ -130,16 +134,25 @@ const styles = StyleSheet.create({
     shadowRadius: 1.41,
     elevation: 4,
   },
+  tileDark: {
+    backgroundColor: "#555",
+  },
   symbol: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 5,
     textAlign: "center",
   },
+  symbolDark: {
+    color: "#fff",
+  },
   price: {
     fontSize: 14,
     color: "#333",
     textAlign: "center",
+  },
+  priceDark: {
+    color: "#fff",
   },
   positiveChange: {
     marginTop: 5,
