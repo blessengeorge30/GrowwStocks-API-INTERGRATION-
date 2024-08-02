@@ -78,7 +78,7 @@ export default function DetailsScreen({ route }) {
       <View style={styles.detailsContainer}>
         <Text style={styles.sectionTitle}>About {stockDetails["01. symbol"]}</Text>
         <Text style={styles.description}>
-          Apple Inc. is an American multinational technology company that specializes in consumer electronics, software, and online services.
+       An American multinational technology company that specializes in consumer electronics, software, and online services.
         </Text>
 
         <View style={styles.tagsContainer}>
