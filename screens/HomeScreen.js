@@ -74,13 +74,15 @@ export default function HomeScreen({ navigation }) {
         
        
       </View>
-     <Switch 
-  value={isDarkMode} 
-  onValueChange={toggleTheme} 
-  trackColor={{ false: '#767577', true: '#81b0ff' }} // Change track color
-  thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'} // Change thumb color
-  style={styles.switch} 
-/>
+      <View style={styles.switchContainer}>
+      <Switch 
+        value={isDarkMode} 
+        onValueChange={toggleTheme} 
+        trackColor={{ false: '#D6D6D6', true: '#4B9CD3' }} // Track color
+        thumbColor={isDarkMode ? '#FFFFFF' : '#FFFFFF'} // Thumb color
+        style={styles.switch} 
+      />
+    </View>
 
       <FlatList
         data={filteredData}
@@ -226,8 +228,20 @@ const styles = StyleSheet.create({
     width: 180,
     height: 50,
   },
+  switchContainer: {
+    alignItems: 'center',
+    margin: 10,
+    padding: 10,
+  },
   switch: {
-    marginTop:-55,
-    marginLeft: 50,
+    transform: [{ scaleX: 1.1 }, { scaleY: 1.1 }], // Slightly increase size
+    borderRadius: 16, // Match iPhone roundness
+    borderWidth: 1,
+    borderColor: '#D6D6D6', // Track border color
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 2, // Elevation for Android shadow
   },
 });
