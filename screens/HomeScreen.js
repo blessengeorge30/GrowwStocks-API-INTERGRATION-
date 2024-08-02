@@ -12,11 +12,11 @@ export default function HomeScreen({ navigation }) {
       .get("http://192.168.1.72:5001/stocks/gainers-losers")
       .then((response) => {
         setData({
-          all: [...response.data.gainers, ...response.data.losers], // Add any other stock data here
+          all: [...response.data.gainers, ...response.data.losers],
           gainers: response.data.gainers,
           losers: response.data.losers,
         });
-        setFilteredData([...response.data.gainers, ...response.data.losers]); // Add any other stock data here
+        setFilteredData([...response.data.gainers, ...response.data.losers]);
       })
       .catch((error) => console.error(error));
   }, []);
@@ -44,7 +44,6 @@ export default function HomeScreen({ navigation }) {
       case "MSFT":
         return require("../assets/microsoft.png");
       // Add cases for other symbols as needed
-     
     }
   };
 
@@ -69,6 +68,10 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity>
+        <Image source={require('../assets/logo.png')} style={styles.logo} />
+      </TouchableOpacity>
+     
       <FlatList
         data={filteredData}
         renderItem={renderItem}
@@ -77,20 +80,24 @@ export default function HomeScreen({ navigation }) {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
       />
-      <View style={styles.buttonContainer}>
-        <TouchableOpacity
-          style={[styles.button, view === "gainers" && styles.activeButton]}
-          onPress={() => toggleView("gainers")}
-        >
-          <Text style={styles.buttonText}>Top Gainers</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.button, view === "losers" && styles.activeButton]}
-          onPress={() => toggleView("losers")}
-        >
-          <Text style={styles.buttonText}>Top Losers</Text>
-        </TouchableOpacity>
-      </View>
+     <View style={styles.buttonContainer}>
+  <TouchableOpacity
+    style={[styles.button, view === "gainers" && styles.activeButton]}
+    onPress={() => toggleView("gainers")}
+  >
+    <Text style={styles.buttonText}>Top Gainers</Text>
+  </TouchableOpacity>
+
+  <View style={styles.divider} />
+
+  <TouchableOpacity
+    style={[styles.button, view === "losers" && styles.activeButton]}
+    onPress={() => toggleView("losers")}
+  >
+    <Text style={styles.buttonText}>Top Losers</Text>
+  </TouchableOpacity>
+</View>
+
     </View>
   );
 }
@@ -151,7 +158,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 50,
+    height: 60,
     backgroundColor: "#fff",
     borderTopWidth: 1,
     borderColor: "#ccc",
@@ -170,10 +177,22 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
+  divider: {
+    width: 1,
+    backgroundColor: "#ccc", // Color of the divider line
+    marginVertical: 10, // Optional: adjust the vertical margin for the line
+  },
   image: {
     width: 50,
     height: 50,
     marginBottom: 5,
   },
+  logo: {
+    width: 180,
+    height: 50,
+    marginBottom: 20,
+    alignSelf: "center",
+    marginTop:80,
+    marginBottom:25,
+  },
 });
-
