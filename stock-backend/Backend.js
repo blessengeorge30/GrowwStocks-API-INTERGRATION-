@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 
-const ALPHA_VANTAGE_API_KEY = "3H3RHYD9AZCIITCD";
+const ALPHA_VANTAGE_API_KEY = "660V4S5DMKOYKITD";
 
 // Helper function to calculate percentage change
 function calculatePercentageChange(open, close) {
@@ -48,6 +48,8 @@ app.get("/stocks/gainers-losers", async (req, res) => {
         const dates = Object.keys(timeSeries);
         const latestDate = dates[0];
         const previousDate = dates[1];
+
+        // console.log(dates)
 
         if (!latestDate || !previousDate) {
           console.error(`Missing date data for symbol: ${symbols[index]}`);

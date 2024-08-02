@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
   tile: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    borderRadius: 8,
+    borderRadius: 18,
     padding: 10,
     margin: 5,
     marginVertical:20,
