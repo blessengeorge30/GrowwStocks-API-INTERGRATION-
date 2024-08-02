@@ -69,7 +69,7 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
-  <Image source={require('../assets/logo1.png')} style={styles.logo} />
+  <Image source={require('../assets/logo.png')} style={styles.logo} />
 </TouchableOpacity>
 
       <FlatList
@@ -117,10 +117,10 @@ const styles = StyleSheet.create({
   tile: {
     flex: 1,
     backgroundColor: "#f5f5f5",
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 10,
     margin: 5,
-    marginVertical: 20,
+    marginVertical: 15,
     height: 160,
     alignItems: "center",
     justifyContent: "center",
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 1 },
     shadowOpacity: 0.2,
     shadowRadius: 1.41,
-    elevation: 3,
+    elevation: 4,
   },
   symbol: {
     fontSize: 16,
