@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image ,Linking} from "react-native";
 import axios from "axios";
 
 export default function HomeScreen({ navigation }) {
@@ -68,9 +68,9 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity>
-        <Image source={require('../assets/logo.png')} style={styles.logo} />
-      </TouchableOpacity>
+      <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
+  <Image source={require('../assets/logo1.png')} style={styles.logo} />
+</TouchableOpacity>
 
       <FlatList
         data={filteredData}
