@@ -4,53 +4,122 @@ import axios from "axios";
 
 export default function DetailsScreen({ route }) {
   const { symbol } = route.params;
-  const [stock, setStock] = useState(null);
+  const [stockDetails, setStockDetails] = useState(null);
 
   useEffect(() => {
     axios
-      .get(`http://192.168.1.70:5000/stocks/${symbol}`)
-      .then((response) => setStock(response.data))
+      .get(`http://192.168.1.72:5001/stocks/${symbol}`)
+      .then((response) => {
+        setStockDetails(response.data);
+      })
       .catch((error) => console.error(error));
   }, [symbol]);
 
-  if (!stock) return <Text>Loading...</Text>;
+  if (!stockDetails) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.header}>
-        <Image style={styles.logo} source={{ uri: stock.logoUrl }} />
-        <View style={styles.headerText}>
-          <Text style={styles.symbol}>{stock["01. symbol"]}</Text>
-          <Text style={styles.company}>{stock["02. name"]}</Text>
-          <Text style={styles.exchange}>{stock["03. exchange"]}</Text>
+        <Image source={getImageSource(symbol)} style={styles.logo} />
+        <View>
+          <Text style={styles.title}>{stockDetails["01. symbol"]}</Text>
+          <Text style={styles.subtitle}>{stockDetails["01. symbol"]}</Text>
         </View>
-        <View style={styles.priceContainer}>
-          <Text style={styles.price}>{stock["05. price"]}</Text>
-          <Text style={stock["09. change"].startsWith("-") ? styles.negativeChange : styles.positiveChange}>
-            {stock["09. change"]}
+        <View>
+          <Text style={styles.price}>${parseFloat(stockDetails["05. price"]).toFixed(2)}</Text>
+          <Text
+            style={
+              parseFloat(stockDetails["10. change percent"]) >= 0
+                ? styles.positiveChange
+                : styles.negativeChange
+            }
+          >
+            {stockDetails["10. change percent"]}
           </Text>
         </View>
       </View>
 
+      {/* Chart placeholder */}
       <View style={styles.chartContainer}>
-        {/* Add your chart component here */}
-      </View>
-
-      <View style={styles.infoContainer}>
-        <Text style={styles.sectionTitle}>About {stock["02. name"]}</Text>
-        <Text style={styles.description}>{stock.description || "No description available."}</Text>
+        <Text>Chart goes here</Text>
       </View>
 
       <View style={styles.detailsContainer}>
-        {/* Add more details as needed */}
+        <Text style={styles.sectionTitle}>About {stockDetails["01. symbol"]}</Text>
+        <Text style={styles.description}>
+          Apple Inc. is an American multinational technology company that specializes in consumer electronics, software, and online services.
+        </Text>
+
+        {/* Industry and Sector */}
+        <View style={styles.tagsContainer}>
+          <Text style={styles.tag}>Industry: Electronic computers</Text>
+          <Text style={styles.tag}>Sector: Technology</Text>
+        </View>
+
+        {/* Additional stock information in three columns */}
+        <View style={styles.infoContainer}>
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>52-Week Low:</Text>
+            <Text style={styles.infoValue}>{stockDetails["04. low"]}</Text>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>52-Week High:</Text>
+            <Text style={styles.infoValue}>{stockDetails["03. high"]}</Text>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>Market Cap:</Text>
+            <Text style={styles.infoValue}>$2.77T</Text>
+          </View>
+
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>P/E Ratio:</Text>
+            <Text style={styles.infoValue}>27.77</Text>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>Beta:</Text>
+            <Text style={styles.infoValue}>1.308</Text>
+          </View>
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>Dividend Yield:</Text>
+            <Text style={styles.infoValue}>0.54%</Text>
+          </View>
+
+          <View style={styles.column}>
+            <Text style={styles.infoTitle}>Profit Margin:</Text>
+            <Text style={styles.infoValue}>24.7%</Text>
+          </View>
+        </View>
       </View>
     </ScrollView>
   );
 }
 
+// Function to get the image path based on the stock symbol
+const getImageSource = (symbol) => {
+  switch (symbol) {
+    case "AAPL":
+      return require("../assets/apple.png");
+    case "GOOGL":
+      return require("../assets/google.png");
+    case "TSLA":
+      return require("../assets/tesla.png");
+    case "AMZN":
+      return require("../assets/shopping.png");
+    case "MSFT":
+      return require("../assets/microsoft.png");
+    // default:
+    //   return require("../assets/placeholder.png"); // Placeholder for unknown symbols
+  }
+};
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     padding: 15,
     backgroundColor: "#fff",
   },
@@ -61,46 +130,35 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
   },
-  headerText: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  symbol: {
-    fontSize: 18,
+  title: {
+    fontSize: 24,
     fontWeight: "bold",
   },
-  company: {
-    fontSize: 16,
-    color: "#555",
-  },
-  exchange: {
-    fontSize: 14,
+  subtitle: {
+    fontSize: 18,
     color: "#888",
   },
-  priceContainer: {
-    alignItems: "flex-end",
-  },
   price: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: "bold",
   },
   positiveChange: {
-    fontSize: 16,
     color: "#4CAF50",
   },
   negativeChange: {
-    fontSize: 16,
     color: "#F44336",
   },
   chartContainer: {
     height: 200,
     marginBottom: 20,
-    // Chart component styles go here
+    backgroundColor: "#f5f5f5",
+    justifyContent: "center",
+    alignItems: "center",
   },
-  infoContainer: {
+  detailsContainer: {
     marginBottom: 20,
   },
   sectionTitle: {
@@ -110,10 +168,37 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 14,
-    color: "#555",
-    lineHeight: 20,
+    color: "#333",
+    marginBottom: 20,
   },
-  detailsContainer: {
-    // Additional details styles go here
+  tagsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginBottom: 20,
+  },
+  tag: {
+    padding: 5,
+    borderRadius: 5,
+    backgroundColor: "#e0e0e0",
+    fontSize: 14,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  column: {
+    flexBasis: "30%",
+    marginBottom: 15,
+  },
+  infoTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  infoValue: {
+    fontSize: 14,
+    color: "#333",
   },
 });
