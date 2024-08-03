@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingVertical: 10,
-    marginTop: 35,
+    marginTop: 25,
   },
   listContent: {
     paddingBottom: 80,
@@ -287,14 +287,15 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     alignItems: 'center',
-    marginTop: 35,
+    marginVertical: 15,
     flexDirection: 'row',
     marginLeft: 10,
+ 
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
+    marginTop: 25,
     marginLeft: 60,
   },
   label: {
