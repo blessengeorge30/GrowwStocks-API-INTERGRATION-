@@ -67,6 +67,9 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
+      case "AMD":
+        return require("../assets/amd.png");
+      // Add more cases as needed
     }
   };
 
@@ -234,13 +237,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#e0e0e0",
   },
   activeButtonDark: {
-    backgroundColor: "#181818", 
-    
+    backgroundColor: "#181818",
   },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#333",
+  },
+  buttonTextDark: {
+    color: "#fff",
   },
   divider: {
     width: 1,
