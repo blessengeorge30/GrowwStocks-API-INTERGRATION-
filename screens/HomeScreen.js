@@ -12,16 +12,37 @@ export default function HomeScreen({ navigation }) {
   const [view, setView] = useState("all");
 
   useEffect(() => {
-    fetchStockData();
+    fetchAllStockData();
+    fetchGainersLosersData();
   }, []);
 
-  const fetchStockData = () => {
+  const fetchAllStockData = () => {
+    const cacheKey = "all";
+
+    if (cache[cacheKey]) {
+      const cachedData = cache[cacheKey];
+      setData((prevData) => ({ ...prevData, all: cachedData }));
+      setFilteredData(cachedData);
+      return;
+    }
+
+    axios
+      .get("http://192.168.1.72:5001/stocks/all")
+      .then((response) => {
+        const newData = response.data.stocks;
+        cache[cacheKey] = newData;
+        setData((prevData) => ({ ...prevData, all: newData }));
+        setFilteredData(newData);
+      })
+      .catch((error) => console.error(error));
+  };
+
+  const fetchGainersLosersData = () => {
     const cacheKey = "gainers-losers";
 
     if (cache[cacheKey]) {
       const cachedData = cache[cacheKey];
-      setData(cachedData);
-      setFilteredData([...cachedData.gainers, ...cachedData.losers]);
+      setData((prevData) => ({ ...prevData, gainers: cachedData.gainers, losers: cachedData.losers }));
       return;
     }
 
@@ -29,14 +50,12 @@ export default function HomeScreen({ navigation }) {
       .get("http://192.168.1.72:5001/stocks/gainers-losers")
       .then((response) => {
         const newData = {
-          all: [...response.data.gainers, ...response.data.losers],
           gainers: response.data.gainers,
           losers: response.data.losers,
         };
 
         cache[cacheKey] = newData;
-        setData(newData);
-        setFilteredData([...response.data.gainers, ...response.data.losers]);
+        setData((prevData) => ({ ...prevData, gainers: newData.gainers, losers: newData.losers }));
       })
       .catch((error) => console.error(error));
   };
@@ -60,22 +79,27 @@ export default function HomeScreen({ navigation }) {
       case "TSLA":
         return require("../assets/tesla.png");
       case "AMZN":
-        return require("../assets/shopping.png");
+        return require("../assets/shopping.png"); 
       case "MSFT":
         return require("../assets/microsoft.png");
       case "AMD":
         return require("../assets/amd.png");
+      case "IBM":
+        return require("../assets/ibm.png"); 
+      case "META":
+        return require("../assets/meta.png"); 
       default:
-        return null;
+        return require("../assets/splash.png"); 
     }
   };
+  
 
   const getStockTitle = (symbol) => {
     switch (symbol) {
       case "AAPL":
         return "Apple Inc.";
       case "GOOGL":
-        return "Alphabet Inc.";
+        return "Alphabet Inc. (Google)";
       case "TSLA":
         return "Tesla, Inc.";
       case "AMZN":
@@ -84,10 +108,15 @@ export default function HomeScreen({ navigation }) {
         return "Microsoft Corporation";
       case "AMD":
         return "Advanced Micro Devices, Inc.";
+      case "IBM":
+        return "IBM Corporation";
+      case "META":
+        return "Meta Platforms, Inc. (formerly Facebook)";
       default:
         return "Unknown Stock";
     }
   };
+  
 
   const renderItem = ({ item }) => (
     <TouchableOpacity

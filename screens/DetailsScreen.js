@@ -1,10 +1,35 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity, Dimensions, ActivityIndicator, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, Image, ScrollView, TextInput, TouchableOpacity, Dimensions, ActivityIndicator, SafeAreaView, FlatList } from "react-native";
 import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
+// Cache for storing fetched stock data
 const cache = {};
+
+// Function to get company name based on stock symbol
+const getStockTitle = (symbol) => {
+  switch (symbol) {
+    case "AAPL":
+      return "Apple Inc.";
+    case "GOOGL":
+      return "Alphabet Inc. (Google)";
+    case "TSLA":
+      return "Tesla, Inc.";
+    case "AMZN":
+      return "Amazon.com, Inc.";
+    case "MSFT":
+      return "Microsoft Corporation";
+    case "AMD":
+      return "Advanced Micro Devices, Inc.";
+    case "IBM":
+      return "IBM Corporation";
+    case "META":
+      return "Meta Platforms, Inc. (formerly Facebook)";
+    default:
+      return "Unknown Stock";
+  }
+};
 
 export default function DetailsScreen({ route }) {
   const { symbol: initialSymbol } = route.params;
@@ -12,6 +37,7 @@ export default function DetailsScreen({ route }) {
   const [stockDetails, setStockDetails] = useState(null);
   const [timeSeriesDaily, setTimeSeriesDaily] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [recentSearches, setRecentSearches] = useState([]);
 
   const navigation = useNavigation();
 
@@ -38,7 +64,25 @@ export default function DetailsScreen({ route }) {
       .catch(error => console.error(error));
   };
 
-  const handleSearch = () => setSymbol(searchQuery);
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      setSymbol(searchQuery.trim());
+      addToRecentSearches(searchQuery.trim());
+      setSearchQuery("");
+    }
+  };
+
+  const addToRecentSearches = (newSearch) => {
+    setRecentSearches(prevSearches => {
+      const updatedSearches = [newSearch, ...prevSearches.filter(search => search !== newSearch)];
+      return updatedSearches.slice(0, 5); // Keep only the last 5 searches
+    });
+  };
+
+  const handleRecentSearchPress = (search) => {
+    setSymbol(search);
+    setSearchQuery(""); // Clear the search input after selecting a recent search
+  };
 
   if (!stockDetails || !timeSeriesDaily) {
     return (
@@ -97,11 +141,26 @@ export default function DetailsScreen({ route }) {
           </View>
         </View>
 
+        {recentSearches.length > 0 && (
+          <View style={styles.recentSearchContainer}>
+            <Text style={styles.recentSearchHeader}>Recent Searches</Text>
+            <FlatList
+              data={recentSearches}
+              renderItem={({ item }) => (
+                <TouchableOpacity onPress={() => handleRecentSearchPress(item)} style={styles.recentSearchItem}>
+                  <Text style={styles.recentSearchText}>{item}</Text>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+            />
+          </View>
+        )}
+
         <View style={styles.stockHeader}>
           <Image source={getImageSource(symbol)} style={styles.logo} />
           <View>
             <Text style={styles.title}>{stockDetails["01. symbol"]}</Text>
-            <Text style={styles.subtitle}>{stockDetails["01. symbol"]}</Text>
+            <Text style={styles.subtitle}>{getStockTitle(symbol)}</Text>
           </View>
           <View>
             <Text style={styles.price}>${parseFloat(stockDetails["05. price"]).toFixed(2)}</Text>
@@ -189,6 +248,8 @@ const getImageSource = (symbol) => {
     case "AMZN": return require("../assets/shopping.png");
     case "MSFT": return require("../assets/microsoft.png");
     case "AMD": return require("../assets/amd.png");
+    case "IBM": return require("../assets/ibm.png");
+    case "META": return require("../assets/meta.png");
     default: return null;
   }
 };
@@ -196,7 +257,7 @@ const getImageSource = (symbol) => {
 const getDescription = (symbol) => {
   switch (symbol) {
     case "AAPL": return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music.";
-    case "GOOGL": return "Google stocks, traded under Alphabet Inc. represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more. Known for their strong performance and significant impact on market trends.";
+    case "GOOGL": return "Google stocks, traded under Alphabet Inc., represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more. Known for their strong performance and significant impact on market trends.";
     case "TSLA": return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
     case "AMZN": return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
     case "MSFT": return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
@@ -241,12 +302,12 @@ const styles = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: "#ccc",
     marginBottom: 20,
-    marginTop: 15,
+    marginTop: 25,
     height: 40,
     width: '60%',
     alignSelf: 'flex-end',
     borderRadius: 12,
-    marginHorizontal: 60,
+    marginHorizontal: 65,
   },
   searchInput: {
     flex: 1,
@@ -346,5 +407,22 @@ const styles = StyleSheet.create({
   },
   activityIndicator: {
     transform: [{ scale: 2 }],
+  },
+  recentSearchContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  recentSearchHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  recentSearchItem: {
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+  },
+  recentSearchText: {
+    fontSize: 16,
   },
 });
