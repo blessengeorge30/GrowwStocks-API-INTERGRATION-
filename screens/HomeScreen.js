@@ -17,7 +17,7 @@ export default function HomeScreen({ navigation }) {
 
   const fetchStockData = () => {
     const cacheKey = "gainers-losers";
-    
+
     // Check if data is already in cache
     if (cache[cacheKey]) {
       const cachedData = cache[cacheKey];
@@ -73,13 +73,35 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  const getStockTitle = (symbol) => {
+    switch (symbol) {
+      case "AAPL":
+        return "Apple Inc.";
+      case "GOOGL":
+        return "Alphabet Inc.";
+      case "TSLA":
+        return "Tesla, Inc.";
+      case "AMZN":
+        return "Amazon.com, Inc.";
+      case "MSFT":
+        return "Microsoft Corporation";
+      case "AMD":
+        return "Advanced Micro Devices, Inc.";
+      // Add more cases as needed
+      default:
+        return "Unknown Stock"; // Fallback title if the symbol isn't matched
+    }
+  };
+
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.tile, isDarkMode && styles.tileDark]}
       onPress={() => navigation.navigate("Details", { symbol: item.symbol })}
     >
       <Image source={getImageSource(item.symbol)} style={styles.image} />
+
       <Text style={[styles.symbol, isDarkMode && styles.symbolDark]}>{item.symbol}</Text>
+      <Text style={[styles.title, isDarkMode && styles.titleDark]}>{getStockTitle(item.symbol)}</Text>
       <Text style={[styles.price, isDarkMode && styles.priceDark]}>
         ${item.closePrice.toFixed(2)}
       </Text>
@@ -99,18 +121,18 @@ export default function HomeScreen({ navigation }) {
         </View>
         <View style={styles.toggleContainer}>
           <Text style={[styles.label, isDarkMode && styles.textWhite]}>Light</Text>
-          <Switch 
-            value={isDarkMode} 
-            onValueChange={toggleTheme} 
+          <Switch
+            value={isDarkMode}
+            onValueChange={toggleTheme}
             trackColor={{ false: '#767577', true: '#81b0ff' }} // Track color
             thumbColor={isDarkMode ? '#fff' : '#00ebb4'} // Thumb color
             ios_backgroundColor="#3e3e3e" // iOS background color
-            style={styles.switch} 
+            style={styles.switch}
           />
           <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark</Text>
         </View>
       </View>
-      
+
       <FlatList
         data={filteredData}
         renderItem={renderItem}
@@ -119,7 +141,7 @@ export default function HomeScreen({ navigation }) {
         columnWrapperStyle={styles.row}
         contentContainerStyle={styles.listContent}
       />
-      
+
       <View style={[styles.buttonContainer, isDarkMode && styles.buttonContainerDark]}>
         <TouchableOpacity
           style={[styles.button, view === "gainers" && (isDarkMode ? styles.activeButtonDark : styles.activeButton)]}
@@ -251,6 +273,15 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: "#ccc",
     marginVertical: 10,
+  },
+  title: {
+    fontSize: 14,
+    color: "#666", // Default color
+    textAlign: "center",
+    marginBottom: 5,
+  },
+  titleDark: {
+    color: "#ccc", // Lighter color for dark mode
   },
   image: {
     width: 60,
