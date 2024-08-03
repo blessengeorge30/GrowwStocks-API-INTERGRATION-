@@ -4,11 +4,7 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
-
 const cache = {};
-
-
-
 
 export default function DetailsScreen({ route }) {
   const { symbol: initialSymbol } = route.params;
@@ -22,9 +18,9 @@ export default function DetailsScreen({ route }) {
 
   useEffect(() => {
     fetchStockDetails(symbol);
-  }, [symbol]);
+    }, [symbol]);
 
-  const fetchStockDetails = (symbol) => {
+  const fetchStockDetails = async (symbol) => {
     if (cache[symbol]) {
       const cachedData = cache[symbol];
       setStockDetails(cachedData.globalQuote);
@@ -32,15 +28,40 @@ export default function DetailsScreen({ route }) {
       return;
     }
 
-    axios
-      .get(`http://192.168.1.72:5001/stocks/${symbol}`)
-      .then(response => {
-        const { globalQuote, timeSeriesDaily } = response.data;
-        cache[symbol] = { globalQuote, timeSeriesDaily };
-        setStockDetails(globalQuote);
-        setTimeSeriesDaily(timeSeriesDaily);
-      })
-      .catch(error => console.error(error));
+    const apiKey = "demo"; 
+
+    try {
+      const globalQuoteResponse = await axios.get(
+        `https://www.alphavantage.co/query`,
+        {
+          params: {
+            function: "GLOBAL_QUOTE",
+            symbol: symbol,
+            apikey: apiKey,
+          },
+        }
+      );
+
+      const timeSeriesResponse = await axios.get(
+        `https://www.alphavantage.co/query`,
+        {
+          params: {
+            function: "TIME_SERIES_DAILY",
+            symbol: symbol,
+            apikey: apiKey,
+          },
+        }
+      );
+
+      const globalQuote = globalQuoteResponse.data["Global Quote"];
+      const timeSeriesDaily = timeSeriesResponse.data["Time Series (Daily)"];
+
+      cache[symbol] = { globalQuote, timeSeriesDaily };
+      setStockDetails(globalQuote);
+      setTimeSeriesDaily(timeSeriesDaily);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleSearch = () => {
@@ -52,37 +73,46 @@ export default function DetailsScreen({ route }) {
   };
 
   const addToRecentSearches = (newSearch) => {
-    setRecentSearches(prevSearches => {
-      const updatedSearches = [newSearch, ...prevSearches.filter(search => search !== newSearch)];
-      return updatedSearches.slice(0, 5); 
+    setRecentSearches((prevSearches) => {
+      const updatedSearches = [
+        newSearch,
+        ...prevSearches.filter((search) => search !== newSearch),
+      ];
+      return updatedSearches.slice(0, 5);
     });
   };
 
   const handleRecentSearchPress = (search) => {
     setSymbol(search);
-    setSearchQuery(""); 
+    setSearchQuery("");
   };
 
   if (!stockDetails || !timeSeriesDaily) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" style={styles.activityIndicator} />
+        <ActivityIndicator
+          size="large"
+          color="#0000ff"
+          style={styles.activityIndicator}
+        />
       </SafeAreaView>
     );
   }
 
   const labels = Object.keys(timeSeriesDaily).reverse();
-  const data = Object.values(timeSeriesDaily).reverse().map(dailyData => parseFloat(dailyData["4. close"]));
+  const data = Object.values(timeSeriesDaily)
+    .reverse()
+    .map((dailyData) => parseFloat(dailyData["4. close"]));
 
   const chartData = {
     labels: labels,
     datasets: [
       {
         data: data,
-        color: opacity => `rgba(0, 0, 0, ${opacity})`,
-        strokeWidth: 2
-      }
-    ]
+        color: (opacity) => `rgba(0, 0, 0, ${opacity})`,
+        strokeWidth: 2,
+      },
+    ],
   };
 
   const chartConfig = {
@@ -90,11 +120,11 @@ export default function DetailsScreen({ route }) {
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
     decimalPlaces: 2,
-    color: opacity => `rgba(0, 0, 0, ${opacity})`,
-    labelColor: opacity => `rgba(0, 0, 0, ${opacity})`,
+    color: (opacity) => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: (opacity) => `rgba(0, 0, 0, ${opacity})`,
     style: { borderRadius: 16 },
     propsForDots: { r: "0", strokeWidth: "0", stroke: "#000000" },
-    propsForBackgroundLines: { strokeDasharray: "", stroke: "#e3e3e3" }
+    propsForBackgroundLines: { strokeDasharray: "", stroke: "#e3e3e3" },
   };
 
   const getStockTitle = (symbol) => {
@@ -122,10 +152,16 @@ export default function DetailsScreen({ route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Image source={require("../assets/back.png")} style={styles.backIcon} />
+            <Image
+              source={require("../assets/back.png")}
+              style={styles.backIcon}
+            />
           </TouchableOpacity>
           <Text style={styles.headerText}>Details</Text>
 
@@ -138,7 +174,10 @@ export default function DetailsScreen({ route }) {
               onSubmitEditing={handleSearch}
             />
             <TouchableOpacity onPress={handleSearch}>
-              <Image source={require('../assets/search.png')} style={styles.searchIcon} />
+              <Image
+                source={require("../assets/search.png")}
+                style={styles.searchIcon}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -149,7 +188,10 @@ export default function DetailsScreen({ route }) {
             <FlatList
               data={recentSearches}
               renderItem={({ item }) => (
-                <TouchableOpacity onPress={() => handleRecentSearchPress(item)} style={styles.recentSearchItem}>
+                <TouchableOpacity
+                  onPress={() => handleRecentSearchPress(item)}
+                  style={styles.recentSearchItem}
+                >
                   <Text style={styles.recentSearchText}>{item}</Text>
                 </TouchableOpacity>
               )}
@@ -165,7 +207,9 @@ export default function DetailsScreen({ route }) {
             <Text style={styles.subtitle}>{getStockTitle(symbol)}</Text>
           </View>
           <View>
-            <Text style={styles.price}>${parseFloat(stockDetails["05. price"]).toFixed(2)}</Text>
+            <Text style={styles.price}>
+              ${parseFloat(stockDetails["05. price"]).toFixed(2)}
+            </Text>
             <Text
               style={
                 parseFloat(stockDetails["10. change percent"]) >= 0
@@ -221,11 +265,15 @@ export default function DetailsScreen({ route }) {
             </View>
             <View style={styles.column}>
               <Text style={styles.infoTitle}>Latest Trading Day:</Text>
-              <Text style={styles.infoValue}>{stockDetails["07. latest trading day"]}</Text>
+              <Text style={styles.infoValue}>
+                {stockDetails["07. latest trading day"]}
+              </Text>
             </View>
             <View style={styles.column}>
               <Text style={styles.infoTitle}>Previous Close:</Text>
-              <Text style={styles.infoValue}>{stockDetails["08. previous close"]}</Text>
+              <Text style={styles.infoValue}>
+                {stockDetails["08. previous close"]}
+              </Text>
             </View>
             <View style={styles.column}>
               <Text style={styles.infoTitle}>Change:</Text>
@@ -233,7 +281,9 @@ export default function DetailsScreen({ route }) {
             </View>
             <View style={styles.column}>
               <Text style={styles.infoTitle}>Change Percent:</Text>
-              <Text style={styles.infoValue}>{stockDetails["10. change percent"]}</Text>
+              <Text style={styles.infoValue}>
+                {stockDetails["10. change percent"]}
+              </Text>
             </View>
           </View>
         </View>
@@ -244,27 +294,43 @@ export default function DetailsScreen({ route }) {
 
 const getImageSource = (symbol) => {
   switch (symbol) {
-    case "AAPL": return require("../assets/apple.png");
-    case "GOOGL": return require("../assets/google.png");
-    case "TSLA": return require("../assets/tesla.png");
-    case "AMZN": return require("../assets/shopping.png");
-    case "MSFT": return require("../assets/microsoft.png");
-    case "AMD": return require("../assets/amd.png");
-    case "IBM": return require("../assets/ibm.png");
-    case "META": return require("../assets/meta.png");
-    default: return null;
+    case "AAPL":
+      return require("../assets/apple.png");
+    case "GOOGL":
+      return require("../assets/google.png");
+    case "TSLA":
+      return require("../assets/tesla.png");
+    case "AMZN":
+      return require("../assets/shopping.png");
+    case "MSFT":
+      return require("../assets/microsoft.png");
+    case "AMD":
+      return require("../assets/amd.png");
+    case "IBM":
+      return require("../assets/ibm.png");
+    case "META":
+      return require("../assets/meta.png");
+    default:
+      return null;
   }
 };
 
 const getDescription = (symbol) => {
   switch (symbol) {
-    case "AAPL": return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music.";
-    case "GOOGL": return "Google stocks, traded under Alphabet Inc., represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more. Known for their strong performance and significant impact on market trends.";
-    case "TSLA": return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
-    case "AMZN": return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
-    case "MSFT": return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
-    case "AMD": return "An American multinational semiconductor company that develops computer processors and related technologies for business and consumer markets.";
-    default: return "Description not available.";
+    case "AAPL":
+      return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music.";
+    case "GOOGL":
+      return "Google stocks, traded under Alphabet Inc., represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more. Known for their strong performance and significant impact on market trends.";
+    case "TSLA":
+      return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
+    case "AMZN":
+      return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
+    case "MSFT":
+      return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
+    case "AMD":
+      return "An American multinational semiconductor company that develops computer processors and related technologies for business and consumer markets.";
+    default:
+      return "Description not available.";
   }
 };
 
@@ -306,8 +372,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 25,
     height: 40,
-    width: '60%',
-    alignSelf: 'flex-end',
+    width: "60%",
+    alignSelf: "flex-end",
     borderRadius: 12,
     marginHorizontal: 65,
   },

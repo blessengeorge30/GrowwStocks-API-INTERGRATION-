@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Swi
 import axios from "axios";
 import { useTheme } from "../ThemeContext";
 
-const cache = {};
+const ALPHA_VANTAGE_API_KEY = "demo";
 
 export default function HomeScreen({ navigation }) {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -12,52 +12,46 @@ export default function HomeScreen({ navigation }) {
   const [view, setView] = useState("all");
 
   useEffect(() => {
-    fetchAllStockData();
-    fetchGainersLosersData();
+    fetchStockData();
   }, []);
 
-  const fetchAllStockData = () => {
-    const cacheKey = "all";
+  const fetchStockData = async () => {
+    try {
+      const symbols = ["AAPL", "GOOGL", "TSLA", "AMZN", "MSFT", "AMD", "IBM", "META"];
+      const promises = symbols.map((symbol) =>
+        axios.get(`https://www.alphavantage.co/query`, {
+          params: {
+            function: "TIME_SERIES_DAILY",
+            symbol: symbol,
+            apikey: ALPHA_VANTAGE_API_KEY,
+          },
+        })
+      );
 
-    if (cache[cacheKey]) {
-      const cachedData = cache[cacheKey];
-      setData((prevData) => ({ ...prevData, all: cachedData }));
-      setFilteredData(cachedData);
-      return;
-    }
+      const responses = await Promise.all(promises);
+      const stocks = responses.map((response, index) => {
+        const timeSeries = response.data["Time Series (Daily)"];
+        const latestDate = Object.keys(timeSeries)[0];
+        const latestData = timeSeries[latestDate];
+        const previousDate = Object.keys(timeSeries)[1];
+        const previousData = timeSeries[previousDate];
 
-    axios
-      .get("http://192.168.1.72:5001/stocks/all")
-      .then((response) => {
-        const newData = response.data.stocks;
-        cache[cacheKey] = newData;
-        setData((prevData) => ({ ...prevData, all: newData }));
-        setFilteredData(newData);
-      })
-      .catch((error) => console.error(error));
-  };
+        const closePrice = parseFloat(latestData["4. close"]);
+        const previousClosePrice = parseFloat(previousData["4. close"]);
+        const percentageChange = ((closePrice - previousClosePrice) / previousClosePrice) * 100;
 
-  const fetchGainersLosersData = () => {
-    const cacheKey = "gainers-losers";
-
-    if (cache[cacheKey]) {
-      const cachedData = cache[cacheKey];
-      setData((prevData) => ({ ...prevData, gainers: cachedData.gainers, losers: cachedData.losers }));
-      return;
-    }
-
-    axios
-      .get("http://192.168.1.72:5001/stocks/gainers-losers")
-      .then((response) => {
-        const newData = {
-          gainers: response.data.gainers,
-          losers: response.data.losers,
+        return {
+          symbol: symbols[index],
+          closePrice,
+          percentageChange,
         };
+      });
 
-        cache[cacheKey] = newData;
-        setData((prevData) => ({ ...prevData, gainers: newData.gainers, losers: newData.losers }));
-      })
-      .catch((error) => console.error(error));
+      setData({ all: stocks });
+      setFilteredData(stocks);
+    } catch (error) {
+      console.error("Error fetching stock data:", error);
+    }
   };
 
   const toggleView = (selectedView) => {
@@ -79,20 +73,19 @@ export default function HomeScreen({ navigation }) {
       case "TSLA":
         return require("../assets/tesla.png");
       case "AMZN":
-        return require("../assets/shopping.png"); 
+        return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
       case "AMD":
         return require("../assets/amd.png");
       case "IBM":
-        return require("../assets/ibm.png"); 
+        return require("../assets/ibm.png");
       case "META":
-        return require("../assets/meta.png"); 
+        return require("../assets/meta.png");
       default:
-        return require("../assets/splash.png"); 
+        return require("../assets/splash.png");
     }
   };
-  
 
   const getStockTitle = (symbol) => {
     switch (symbol) {
@@ -116,7 +109,6 @@ export default function HomeScreen({ navigation }) {
         return "Unknown Stock";
     }
   };
-  
 
   const renderItem = ({ item }) => (
     <TouchableOpacity
