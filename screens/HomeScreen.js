@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Switch } from "react-native";
 import axios from "axios";
-import { useTheme } from "../ThemeContext"; 
+import { useTheme } from "../ThemeContext";
+
+const cache = {}; // In-memory cache
 
 export default function HomeScreen({ navigation }) {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -10,18 +12,38 @@ export default function HomeScreen({ navigation }) {
   const [view, setView] = useState("all");
 
   useEffect(() => {
+    fetchStockData();
+  }, []);
+
+  const fetchStockData = () => {
+    const cacheKey = "gainers-losers";
+    
+    // Check if data is already in cache
+    if (cache[cacheKey]) {
+      const cachedData = cache[cacheKey];
+      setData(cachedData);
+      setFilteredData([...cachedData.gainers, ...cachedData.losers]);
+      return;
+    }
+
+    // Fetch data from API
     axios
       .get("http://192.168.1.72:5001/stocks/gainers-losers")
       .then((response) => {
-        setData({
+        const newData = {
           all: [...response.data.gainers, ...response.data.losers],
           gainers: response.data.gainers,
           losers: response.data.losers,
-        });
+        };
+
+        // Store response in cache
+        cache[cacheKey] = newData;
+
+        setData(newData);
         setFilteredData([...response.data.gainers, ...response.data.losers]);
       })
       .catch((error) => console.error(error));
-  }, []);
+  };
 
   const toggleView = (selectedView) => {
     if (view === selectedView) {
@@ -237,7 +259,7 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     alignItems: 'center',
-    marginTop: 20, // Added marginTop
+    marginTop: 35, // Added marginTop
     flexDirection: 'row',
     marginLeft: 10
   },
@@ -254,7 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
-    marginLeft: 50
+    marginLeft: 60
   },
   label: {
     fontSize: 16,

@@ -27,7 +27,7 @@ app.get("/stocks/gainers-losers", async (req, res) => {
           apikey: ALPHA_VANTAGE_API_KEY,
         },
       })
-    ); // Fix the unclosed parenthesis here
+    );
 
     const responses = await Promise.all(promises);
 
@@ -48,8 +48,6 @@ app.get("/stocks/gainers-losers", async (req, res) => {
         const dates = Object.keys(timeSeries);
         const latestDate = dates[0];
         const previousDate = dates[1];
-
-        // console.log(dates)
 
         if (!latestDate || !previousDate) {
           console.error(`Missing date data for symbol: ${symbols[index]}`);
@@ -94,15 +92,29 @@ app.get("/stocks/gainers-losers", async (req, res) => {
 app.get("/stocks/:symbol", async (req, res) => {
   const { symbol } = req.params;
   try {
-    const response = await axios.get("https://www.alphavantage.co/query", {
+    const timeSeriesResponse = await axios.get("https://www.alphavantage.co/query", {
+      params: {
+        function: "TIME_SERIES_DAILY",
+        symbol: symbol,
+        apikey: ALPHA_VANTAGE_API_KEY,
+      },
+    });
+
+    const globalQuoteResponse = await axios.get("https://www.alphavantage.co/query", {
       params: {
         function: "GLOBAL_QUOTE",
         symbol: symbol,
         apikey: ALPHA_VANTAGE_API_KEY,
       },
     });
-    console.log(`Details for ${symbol}:`, response.data);
-    res.json(response.data["Global Quote"]);
+
+    console.log(`Time Series Daily for ${symbol}:`, timeSeriesResponse.data);
+    console.log(`Global Quote for ${symbol}:`, globalQuoteResponse.data);
+
+    res.json({
+      timeSeriesDaily: timeSeriesResponse.data["Time Series (Daily)"],
+      globalQuote: globalQuoteResponse.data["Global Quote"],
+    });
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Failed to fetch stock details" });
@@ -112,3 +124,5 @@ app.get("/stocks/:symbol", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
