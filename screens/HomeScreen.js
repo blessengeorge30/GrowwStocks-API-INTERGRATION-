@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Swi
 import axios from "axios";
 import { useTheme } from "../ThemeContext";
 
-const cache = {}; // In-memory cache
+const cache = {};
 
 export default function HomeScreen({ navigation }) {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -18,7 +18,6 @@ export default function HomeScreen({ navigation }) {
   const fetchStockData = () => {
     const cacheKey = "gainers-losers";
 
-    // Check if data is already in cache
     if (cache[cacheKey]) {
       const cachedData = cache[cacheKey];
       setData(cachedData);
@@ -26,7 +25,6 @@ export default function HomeScreen({ navigation }) {
       return;
     }
 
-    // Fetch data from API
     axios
       .get("http://192.168.1.72:5001/stocks/gainers-losers")
       .then((response) => {
@@ -36,9 +34,7 @@ export default function HomeScreen({ navigation }) {
           losers: response.data.losers,
         };
 
-        // Store response in cache
         cache[cacheKey] = newData;
-
         setData(newData);
         setFilteredData([...response.data.gainers, ...response.data.losers]);
       })
@@ -69,7 +65,8 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/microsoft.png");
       case "AMD":
         return require("../assets/amd.png");
-      // Add more cases as needed
+      default:
+        return null;
     }
   };
 
@@ -87,9 +84,8 @@ export default function HomeScreen({ navigation }) {
         return "Microsoft Corporation";
       case "AMD":
         return "Advanced Micro Devices, Inc.";
-      // Add more cases as needed
       default:
-        return "Unknown Stock"; // Fallback title if the symbol isn't matched
+        return "Unknown Stock";
     }
   };
 
@@ -99,7 +95,6 @@ export default function HomeScreen({ navigation }) {
       onPress={() => navigation.navigate("Details", { symbol: item.symbol })}
     >
       <Image source={getImageSource(item.symbol)} style={styles.image} />
-
       <Text style={[styles.symbol, isDarkMode && styles.symbolDark]}>{item.symbol}</Text>
       <Text style={[styles.title, isDarkMode && styles.titleDark]}>{getStockTitle(item.symbol)}</Text>
       <Text style={[styles.price, isDarkMode && styles.priceDark]}>
@@ -124,9 +119,9 @@ export default function HomeScreen({ navigation }) {
           <Switch
             value={isDarkMode}
             onValueChange={toggleTheme}
-            trackColor={{ false: '#767577', true: '#81b0ff' }} // Track color
-            thumbColor={isDarkMode ? '#fff' : '#00ebb4'} // Thumb color
-            ios_backgroundColor="#3e3e3e" // iOS background color
+            trackColor={{ false: '#767577', true: '#81b0ff' }}
+            thumbColor={isDarkMode ? '#fff' : '#00ebb4'}
+            ios_backgroundColor="#3e3e3e"
             style={styles.switch}
           />
           <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark</Text>
@@ -170,17 +165,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   containerDark: {
-    backgroundColor: "#000", // Black background for dark mode
+    backgroundColor: "#000",
   },
   header: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center", // Center content horizontally
+    justifyContent: "center",
     paddingVertical: 10,
     marginTop: 35,
-  },
-  headerDark: {
-    backgroundColor: "#000", // Dark background for header in dark mode
   },
   listContent: {
     paddingBottom: 80,
@@ -205,7 +197,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   tileDark: {
-    backgroundColor: "#333", // Dark background for tiles in dark mode
+    backgroundColor: "#333",
   },
   symbol: {
     fontSize: 16,
@@ -214,7 +206,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   symbolDark: {
-    color: "#fff", // White text for symbol in dark mode
+    color: "#fff",
   },
   price: {
     fontSize: 14,
@@ -222,7 +214,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   priceDark: {
-    color: "#fff", // White text for price in dark mode
+    color: "#fff",
   },
   positiveChange: {
     marginTop: 5,
@@ -247,7 +239,7 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
   },
   buttonContainerDark: {
-    backgroundColor: "#000", // Black background for button container in dark mode
+    backgroundColor: "#000",
   },
   button: {
     flex: 1,
@@ -266,7 +258,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#333",
   },
-  buttonTextDark: {
+  textWhite: {
     color: "#fff",
   },
   divider: {
@@ -276,12 +268,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 14,
-    color: "#666", // Default color
+    color: "#666",
     textAlign: "center",
     marginBottom: 5,
   },
   titleDark: {
-    color: "#ccc", // Lighter color for dark mode
+    color: "#ccc",
   },
   image: {
     width: 60,
@@ -295,43 +287,30 @@ const styles = StyleSheet.create({
   },
   switchContainer: {
     alignItems: 'center',
-    marginTop: 35, // Added marginTop
+    marginTop: 35,
     flexDirection: 'row',
-    marginLeft: 10
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 10,
-  },
-  headerDark: {
-    backgroundColor: '#333', // Example dark mode background color
+    marginLeft: 10,
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: 5,
-    marginLeft: 60
+    marginLeft: 60,
   },
   label: {
     fontSize: 16,
     marginHorizontal: 2,
   },
-  textWhite: {
-    color: '#fff',
-  },
   switch: {
     marginHorizontal: 5,
-    transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], // Slightly increase size
-    borderRadius: 24, // Make the border radius larger for more rounded appearance
+    transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }],
+    borderRadius: 24,
     borderWidth: 2,
-    borderColor: '#d3d3d3', // Lighter border color for better visibility
+    borderColor: '#d3d3d3',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 6,
-    elevation: 4, // Elevation for Android shadow
+    elevation: 4,
   },
 });
-
