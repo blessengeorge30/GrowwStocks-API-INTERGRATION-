@@ -1,26 +1,23 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import { ThemeProvider } from "./ThemeContext"; // Adjust the path as needed
+import { ThemeProvider } from "./ThemeContext"; 
 import HomeScreen from "./screens/HomeScreen";
 import DetailsScreen from "./screens/DetailsScreen";
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App = () => {
   return (
-    <ThemeProvider> 
+    <ThemeProvider>
       <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen 
-            name="Home" 
-            component={HomeScreen} 
-            options={{ headerShown: false }} 
-          />
-          <Stack.Screen name="Details" component={DetailsScreen}
-           options={{ headerShown: false }}  />
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="Details" component={DetailsScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </ThemeProvider>
   );
-}
+};
+
+export default App;

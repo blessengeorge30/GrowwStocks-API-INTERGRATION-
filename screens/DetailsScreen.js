@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
-const cache = {}; // In-memory cache
+const cache = {};
 
 export default function DetailsScreen({ route }) {
   const { symbol: initialSymbol } = route.params;
@@ -20,7 +20,6 @@ export default function DetailsScreen({ route }) {
   }, [symbol]);
 
   const fetchStockDetails = (symbol) => {
-    // Check if data is already in cache
     if (cache[symbol]) {
       const cachedData = cache[symbol];
       setStockDetails(cachedData.globalQuote);
@@ -28,24 +27,18 @@ export default function DetailsScreen({ route }) {
       return;
     }
 
-    // Fetch data from API
     axios
       .get(`http://192.168.1.72:5001/stocks/${symbol}`)
-      .then((response) => {
+      .then(response => {
         const { globalQuote, timeSeriesDaily } = response.data;
-
-        // Store response in cache
         cache[symbol] = { globalQuote, timeSeriesDaily };
-
         setStockDetails(globalQuote);
         setTimeSeriesDaily(timeSeriesDaily);
       })
-      .catch((error) => console.error(error));
+      .catch(error => console.error(error));
   };
 
-  const handleSearch = () => {
-    setSymbol(searchQuery);
-  };
+  const handleSearch = () => setSymbol(searchQuery);
 
   if (!stockDetails || !timeSeriesDaily) {
     return (
@@ -55,17 +48,16 @@ export default function DetailsScreen({ route }) {
     );
   }
 
-  // Prepare data for the chart
-  const labels = Object.keys(timeSeriesDaily).reverse(); // Dates
-  const data = Object.values(timeSeriesDaily).reverse().map(dailyData => parseFloat(dailyData["4. close"])); // Closing prices
+  const labels = Object.keys(timeSeriesDaily).reverse();
+  const data = Object.values(timeSeriesDaily).reverse().map(dailyData => parseFloat(dailyData["4. close"]));
 
   const chartData = {
     labels: labels,
     datasets: [
       {
         data: data,
-        color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Line color
-        strokeWidth: 2 // Line width
+        color: opacity => `rgba(0, 0, 0, ${opacity})`,
+        strokeWidth: 2
       }
     ]
   };
@@ -74,26 +66,17 @@ export default function DetailsScreen({ route }) {
     backgroundColor: "#ffffff",
     backgroundGradientFrom: "#ffffff",
     backgroundGradientTo: "#ffffff",
-    decimalPlaces: 2, // optional, defaults to 2dp
-    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Label color
-    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // Label color
-    style: {
-      borderRadius: 16
-    },
-    propsForDots: {
-      r: "0",
-      strokeWidth: "0",
-      stroke: "#000000"
-    },
-    propsForBackgroundLines: {
-      strokeDasharray: "", // solid background lines with no dashes
-      stroke: "#e3e3e3"
-    }
+    decimalPlaces: 2,
+    color: opacity => `rgba(0, 0, 0, ${opacity})`,
+    labelColor: opacity => `rgba(0, 0, 0, ${opacity})`,
+    style: { borderRadius: 16 },
+    propsForDots: { r: "0", strokeWidth: "0", stroke: "#000000" },
+    propsForBackgroundLines: { strokeDasharray: "", stroke: "#e3e3e3" }
   };
-  
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image source={require("../assets/back.png")} style={styles.backIcon} />
@@ -200,40 +183,25 @@ export default function DetailsScreen({ route }) {
 
 const getImageSource = (symbol) => {
   switch (symbol) {
-    case "AAPL":
-      return require("../assets/apple.png");
-    case "GOOGL":
-      return require("../assets/google.png");
-    case "TSLA":
-      return require("../assets/tesla.png");
-    case "AMZN":
-      return require("../assets/shopping.png");
-    case "MSFT":
-      return require("../assets/microsoft.png");
-    case "AMD":
-      return require("../assets/amd.png");
-    // Add more cases as needed
-
+    case "AAPL": return require("../assets/apple.png");
+    case "GOOGL": return require("../assets/google.png");
+    case "TSLA": return require("../assets/tesla.png");
+    case "AMZN": return require("../assets/shopping.png");
+    case "MSFT": return require("../assets/microsoft.png");
+    case "AMD": return require("../assets/amd.png");
+    default: return null;
   }
 };
 
 const getDescription = (symbol) => {
   switch (symbol) {
-    case "AAPL":
-      return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music. ";
-    case "GOOGL":
-      return "Google stocks, traded under Alphabet Inc. represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more.known for their strong performance and significant impact on market trends.";
-    case "TSLA":
-      return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
-    case "AMZN":
-      return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
-    case "MSFT":
-      return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
-    case "AMD":
-      return "An American multinational semiconductor company that develops computer processors and related technologies for business and consumer markets.";
-    // Add more cases as needed
-    default:
-      return "Description not available.";
+    case "AAPL": return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music.";
+    case "GOOGL": return "Google stocks, traded under Alphabet Inc. represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more. Known for their strong performance and significant impact on market trends.";
+    case "TSLA": return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
+    case "AMZN": return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
+    case "MSFT": return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
+    case "AMD": return "An American multinational semiconductor company that develops computer processors and related technologies for business and consumer markets.";
+    default: return "Description not available.";
   }
 };
 
@@ -253,7 +221,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 5,
-    marginTop: 15, // Reduced gap
+    marginTop: 15,
   },
   backIcon: {
     width: 18,
@@ -273,12 +241,12 @@ const styles = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: "#ccc",
     marginBottom: 20,
-    marginTop: 15, // Reduced gap
+    marginTop: 15,
     height: 40,
     width: '60%',
     alignSelf: 'flex-end',
     borderRadius: 12,
-    marginHorizontal: 75,
+    marginHorizontal: 60,
   },
   searchInput: {
     flex: 1,
