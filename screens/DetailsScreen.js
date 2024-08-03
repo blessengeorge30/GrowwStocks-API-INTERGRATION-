@@ -4,32 +4,11 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
-// Cache for storing fetched stock data
+
 const cache = {};
 
-// Function to get company name based on stock symbol
-const getStockTitle = (symbol) => {
-  switch (symbol) {
-    case "AAPL":
-      return "Apple Inc.";
-    case "GOOGL":
-      return "Alphabet Inc. (Google)";
-    case "TSLA":
-      return "Tesla, Inc.";
-    case "AMZN":
-      return "Amazon.com, Inc.";
-    case "MSFT":
-      return "Microsoft Corporation";
-    case "AMD":
-      return "Advanced Micro Devices, Inc.";
-    case "IBM":
-      return "IBM Corporation";
-    case "META":
-      return "Meta Platforms, Inc. (formerly Facebook)";
-    default:
-      return "Unknown Stock";
-  }
-};
+
+
 
 export default function DetailsScreen({ route }) {
   const { symbol: initialSymbol } = route.params;
@@ -75,13 +54,13 @@ export default function DetailsScreen({ route }) {
   const addToRecentSearches = (newSearch) => {
     setRecentSearches(prevSearches => {
       const updatedSearches = [newSearch, ...prevSearches.filter(search => search !== newSearch)];
-      return updatedSearches.slice(0, 5); // Keep only the last 5 searches
+      return updatedSearches.slice(0, 5); 
     });
   };
 
   const handleRecentSearchPress = (search) => {
     setSymbol(search);
-    setSearchQuery(""); // Clear the search input after selecting a recent search
+    setSearchQuery(""); 
   };
 
   if (!stockDetails || !timeSeriesDaily) {
@@ -116,6 +95,29 @@ export default function DetailsScreen({ route }) {
     style: { borderRadius: 16 },
     propsForDots: { r: "0", strokeWidth: "0", stroke: "#000000" },
     propsForBackgroundLines: { strokeDasharray: "", stroke: "#e3e3e3" }
+  };
+
+  const getStockTitle = (symbol) => {
+    switch (symbol) {
+      case "AAPL":
+        return "Apple Inc.";
+      case "GOOGL":
+        return "Alphabet Inc. (Google)";
+      case "TSLA":
+        return "Tesla, Inc.";
+      case "AMZN":
+        return "Amazon.com, Inc.";
+      case "MSFT":
+        return "Microsoft Corporation";
+      case "AMD":
+        return "Advanced Micro Devices, Inc.";
+      case "IBM":
+        return "IBM Corporation";
+      case "META":
+        return "Meta Platforms, Inc. (formerly Facebook)";
+      default:
+        return "Unknown Stock";
+    }
   };
 
   return (
