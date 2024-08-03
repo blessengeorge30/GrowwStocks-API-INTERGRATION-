@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Switch } from "react-native";
 import axios from "axios";
-import { useTheme } from "../ThemeContext"; // import the useTheme hook
+import { useTheme } from "../ThemeContext"; 
 
 export default function HomeScreen({ navigation }) {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -45,7 +45,6 @@ export default function HomeScreen({ navigation }) {
         return require("../assets/shopping.png");
       case "MSFT":
         return require("../assets/microsoft.png");
-    
     }
   };
 
@@ -67,24 +66,26 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={[styles.container, isDarkMode && styles.containerDark]}>
-      <View style={[styles.header, isDarkMode && styles.headerDark]}>
-        <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
-          <Image source={require('../assets/logo.png')} style={styles.logo} />
-        </TouchableOpacity>
-        
-       
-      </View>
       <View style={styles.switchContainer}>
-      <Switch 
-        value={isDarkMode} 
-        onValueChange={toggleTheme} 
-        trackColor={{ false: '#767577', true: '#81b0ff' }} // Track color
-        thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'} // Thumb color
-        ios_backgroundColor="#3e3e3e" // iOS background color
-        style={styles.switch} 
-      />
-    </View>
-
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => Linking.openURL('https://groww.in/')}>
+            <Image source={require('../assets/logo.png')} style={[styles.logo, isDarkMode && { tintColor: '#fff' }]} />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.toggleContainer}>
+          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Light</Text>
+          <Switch 
+            value={isDarkMode} 
+            onValueChange={toggleTheme} 
+            trackColor={{ false: '#767577', true: '#81b0ff' }} // Track color
+            thumbColor={isDarkMode ? '#fff' : '#00ebb4'} // Thumb color
+            ios_backgroundColor="#3e3e3e" // iOS background color
+            style={styles.switch} 
+          />
+          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark</Text>
+        </View>
+      </View>
+      
       <FlatList
         data={filteredData}
         renderItem={renderItem}
@@ -96,19 +97,19 @@ export default function HomeScreen({ navigation }) {
       
       <View style={[styles.buttonContainer, isDarkMode && styles.buttonContainerDark]}>
         <TouchableOpacity
-          style={[styles.button, view === "gainers" && styles.activeButton]}
+          style={[styles.button, view === "gainers" && (isDarkMode ? styles.activeButtonDark : styles.activeButton)]}
           onPress={() => toggleView("gainers")}
         >
-          <Text style={styles.buttonText}>Top Gainers</Text>
+          <Text style={[styles.buttonText, isDarkMode && styles.textWhite]}>Top Gainers</Text>
         </TouchableOpacity>
 
         <View style={styles.divider} />
 
         <TouchableOpacity
-          style={[styles.button, view === "losers" && styles.activeButton]}
+          style={[styles.button, view === "losers" && (isDarkMode ? styles.activeButtonDark : styles.activeButton)]}
           onPress={() => toggleView("losers")}
         >
-          <Text style={styles.buttonText}>Top Losers</Text>
+          <Text style={[styles.buttonText, isDarkMode && styles.textWhite]}>Top Losers</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center", // Center content horizontally
     paddingVertical: 10,
-    marginTop:35
+    marginTop: 35,
   },
   headerDark: {
     backgroundColor: "#000", // Dark background for header in dark mode
@@ -146,8 +147,8 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 10,
     margin: 5,
-    marginVertical: 15,
-    height: 160,
+    marginVertical: 8,
+    height: 200,
     alignItems: "center",
     justifyContent: "center",
     shadowColor: "#000",
@@ -210,6 +211,10 @@ const styles = StyleSheet.create({
   activeButton: {
     backgroundColor: "#e0e0e0",
   },
+  activeButtonDark: {
+    backgroundColor: "#181818", 
+    
+  },
   buttonText: {
     fontSize: 16,
     fontWeight: "bold",
@@ -221,21 +226,46 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   image: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     marginBottom: 5,
   },
   logo: {
-    width: 180,
+    width: 160,
     height: 50,
+    resizeMode: 'contain',
   },
   switchContainer: {
     alignItems: 'center',
+    marginTop: 20, // Added marginTop
+    flexDirection: 'row',
+    marginLeft: 10
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 10,
-    marginTop: 20,
+  },
+  headerDark: {
+    backgroundColor: '#333', // Example dark mode background color
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 5,
+    marginLeft: 50
+  },
+  label: {
+    fontSize: 16,
+    marginHorizontal: 2,
+  },
+  textWhite: {
+    color: '#fff',
   },
   switch: {
-    transform: [{ scaleX: 1.2 }, { scaleY: 1.2 }], // Slightly increase size
+    marginHorizontal: 5,
+    transform: [{ scaleX: 1.4 }, { scaleY: 1.4 }], // Slightly increase size
     borderRadius: 24, // Make the border radius larger for more rounded appearance
     borderWidth: 2,
     borderColor: '#d3d3d3', // Lighter border color for better visibility
@@ -246,3 +276,4 @@ const styles = StyleSheet.create({
     elevation: 4, // Elevation for Android shadow
   },
 });
+

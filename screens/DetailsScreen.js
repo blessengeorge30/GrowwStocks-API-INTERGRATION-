@@ -156,9 +156,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.7,
     borderColor: "#ccc",
     marginBottom: 20,
-    width: '50%',
+    marginTop:25,
+    width: '60%',
     alignSelf: 'flex-end',
-    borderRadius: 10
+    borderRadius: 12
 
   },
   searchInput: {
@@ -168,9 +169,9 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     padding: 10,
-    height: 12,
-    width: 12,
-    marginRight: 8,
+    height: 8,
+    width: 8,
+    marginRight: 14,
     opacity: 0.7
   },
   header: {
