@@ -9,14 +9,12 @@ app.use(cors());
 
 const ALPHA_VANTAGE_API_KEY = "demo";
 
-// Helper function to calculate percentage change
 function calculatePercentageChange(open, close) {
   return ((close - open) / open) * 100;
 }
 
-// Endpoint to get top gainers and losers
 app.get("/stocks/gainers-losers", async (req, res) => {
-  const symbols = ["AAPL", "GOOGL", "AMZN", "MSFT", "TSLA"]; // Example symbols
+  const symbols = ["AAPL", "GOOGL", "AMZN", "MSFT", "TSLA"];
 
   try {
     const promises = symbols.map((symbol) =>
@@ -31,28 +29,15 @@ app.get("/stocks/gainers-losers", async (req, res) => {
 
     const responses = await Promise.all(promises);
 
-    // Log full responses for debugging
-    responses.forEach((response, index) => {
-      console.log(`Response for ${symbols[index]}:`, response.data);
-    });
-
     const stocksData = responses
       .map((response, index) => {
         const timeSeries = response.data["Time Series (Daily)"];
-
-        if (!timeSeries) {
-          console.error(`Missing Time Series data for symbol: ${symbols[index]}`);
-          return null;
-        }
+        if (!timeSeries) return null;
 
         const dates = Object.keys(timeSeries);
         const latestDate = dates[0];
         const previousDate = dates[1];
-
-        if (!latestDate || !previousDate) {
-          console.error(`Missing date data for symbol: ${symbols[index]}`);
-          return null;
-        }
+        if (!latestDate || !previousDate) return null;
 
         const latestData = timeSeries[latestDate];
         const previousData = timeSeries[previousDate];
@@ -60,10 +45,7 @@ app.get("/stocks/gainers-losers", async (req, res) => {
         const openPrice = parseFloat(previousData["1. open"]);
         const closePrice = parseFloat(latestData["4. close"]);
 
-        const percentageChange = calculatePercentageChange(
-          openPrice,
-          closePrice
-        );
+        const percentageChange = calculatePercentageChange(openPrice, closePrice);
 
         return {
           symbol: symbols[index],
@@ -78,8 +60,8 @@ app.get("/stocks/gainers-losers", async (req, res) => {
       (a, b) => b.percentageChange - a.percentageChange
     );
 
-    const gainers = sortedStocks.slice(0, 3); // Top 3 gainers
-    const losers = sortedStocks.slice(-3); // Top 3 losers
+    const gainers = sortedStocks.slice(0, 3);
+    const losers = sortedStocks.slice(-3);
 
     res.json({ gainers, losers });
   } catch (error) {
@@ -88,9 +70,9 @@ app.get("/stocks/gainers-losers", async (req, res) => {
   }
 });
 
-// Endpoint to get stock details
 app.get("/stocks/:symbol", async (req, res) => {
   const { symbol } = req.params;
+
   try {
     const timeSeriesResponse = await axios.get("https://www.alphavantage.co/query", {
       params: {
@@ -108,9 +90,6 @@ app.get("/stocks/:symbol", async (req, res) => {
       },
     });
 
-    console.log(`Time Series Daily for ${symbol}:`, timeSeriesResponse.data);
-    console.log(`Global Quote for ${symbol}:`, globalQuoteResponse.data);
-
     res.json({
       timeSeriesDaily: timeSeriesResponse.data["Time Series (Daily)"],
       globalQuote: globalQuoteResponse.data["Global Quote"],
@@ -124,5 +103,3 @@ app.get("/stocks/:symbol", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
-
-
