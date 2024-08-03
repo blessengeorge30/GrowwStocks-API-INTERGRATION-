@@ -7,19 +7,18 @@ const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 
-const ALPHA_VANTAGE_API_KEY = "demo";
-// const ALPHA_VANTAGE_API_KEY = "660V4S5DMKOYKITD";
+// const ALPHA_VANTAGE_API_KEY = "demo";
+const ALPHA_VANTAGE_API_KEY = "660V4S5DMKOYKITD";
 
-// Helper function to calculate percentage change
 function calculatePercentageChange(open, close) {
   return ((close - open) / open) * 100;
 }
 
-// Endpoint to get all available stocks (example using a static list)
+
 app.get("/stocks/all", async (req, res) => {
   const symbols = ["AAPL", "GOOGL", "AMZN", "MSFT", "TSLA",
   "IBM",
-  "META"]; // Add more symbols as needed
+  "META"]; 
 
   try {
     const promises = symbols.map((symbol) =>
@@ -76,11 +75,11 @@ app.get("/stocks/all", async (req, res) => {
   }
 });
 
-// Endpoint to get top gainers and losers
+
 app.get("/stocks/gainers-losers", async (req, res) => {
   const symbols = ["AAPL", "GOOGL", "AMZN", "MSFT", "TSLA","MS",
   "IBM",
-  "FB",]; // Add more symbols as needed
+  "FB",]; 
 
   try {
     const promises = symbols.map((symbol) =>
@@ -134,8 +133,8 @@ app.get("/stocks/gainers-losers", async (req, res) => {
       (a, b) => b.percentageChange - a.percentageChange
     );
 
-    const gainers = sortedStocks.slice(0, 3); // Top 3 gainers
-    const losers = sortedStocks.slice(-3); // Top 3 losers
+    const gainers = sortedStocks.slice(0, 3); 
+    const losers = sortedStocks.slice(-3); 
 
     res.json({ gainers, losers });
   } catch (error) {
@@ -144,7 +143,7 @@ app.get("/stocks/gainers-losers", async (req, res) => {
   }
 });
 
-// Endpoint to get stock details
+
 app.get("/stocks/:symbol", async (req, res) => {
   const { symbol } = req.params;
   try {
