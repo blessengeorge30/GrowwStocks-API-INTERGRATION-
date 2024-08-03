@@ -90,10 +90,10 @@ export default function DetailsScreen({ route }) {
       stroke: "#e3e3e3"
     }
   };
-
+  
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView contentContainerStyle={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <Image source={require("../assets/back.png")} style={styles.backIcon} />
@@ -147,9 +147,7 @@ export default function DetailsScreen({ route }) {
 
         <View style={styles.detailsContainer}>
           <Text style={styles.sectionTitle}>About {stockDetails["01. symbol"]}</Text>
-          <Text style={styles.description}>
-            An American multinational technology company that specializes in consumer electronics, software, and online services. It develops innovative products such as tablets, personal computers, and wearables, alongside powerful software solutions. The company is a leader in online services, offering a range of cloud-based solutions that enhance the functionality of its devices.
-          </Text>
+          <Text style={styles.description}>{getDescription(symbol)}</Text>
 
           <View style={styles.tagsContainer}>
             <Text style={styles.tag}>Industry: Electronic computers</Text>
@@ -212,18 +210,38 @@ const getImageSource = (symbol) => {
       return require("../assets/shopping.png");
     case "MSFT":
       return require("../assets/microsoft.png");
+    case "AMD":
+      return require("../assets/amd.png");
+    // Add more cases as needed
+
+  }
+};
+
+const getDescription = (symbol) => {
+  switch (symbol) {
+    case "AAPL":
+      return "Apple Inc. is a multinational technology company renowned for its innovative consumer electronics, software, and online services. Headquartered in Cupertino, California, it is best known for its iconic products such as the iPhone, iPad, Mac computers, Apple Watch, and Apple Music. ";
+    case "GOOGL":
+      return "Google stocks, traded under Alphabet Inc. represent shares in the parent company of Google, encompassing a vast array of tech services and products including search, advertising, cloud computing, and more.known for their strong performance and significant impact on market trends.";
+    case "TSLA":
+      return "An American electric vehicle and clean energy company. The company designs and manufactures electric vehicles, battery energy storage from home to grid-scale, solar panels and solar roof tiles, and related products and services.";
+    case "AMZN":
+      return "An American multinational technology company which focuses on e-commerce, cloud computing, digital streaming, and artificial intelligence. It is considered one of the Big Five companies in the U.S. information technology industry.";
+    case "MSFT":
+      return "An American multinational technology company which produces computer software, consumer electronics, personal computers, and related services. Its best-known software products are the Microsoft Windows line of operating systems, the Microsoft Office suite, and the Internet Explorer and Edge web browsers.";
+    case "AMD":
+      return "An American multinational semiconductor company that develops computer processors and related technologies for business and consumer markets.";
+    // Add more cases as needed
+    default:
+      return "Description not available.";
   }
 };
 
 const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
   container: {
+    flex: 1,
     padding: 15,
     backgroundColor: "#fff",
-    flexGrow: 1,
   },
   loadingContainer: {
     flex: 1,
@@ -235,25 +253,27 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 5,
-    marginTop:12
+    marginTop: 15, // Reduced gap
   },
   backIcon: {
     width: 18,
     height: 18,
     marginLeft: 8,
+    marginTop: 5,
   },
   headerText: {
     fontSize: 15,
     fontWeight: "bold",
     marginLeft: 10,
+    marginTop: 5,
   },
   searchContainer: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 0.7,
     borderColor: "#ccc",
-    marginBottom: 18,
-    marginTop: 10,
+    marginBottom: 20,
+    marginTop: 15, // Reduced gap
     height: 40,
     width: '60%',
     alignSelf: 'flex-end',

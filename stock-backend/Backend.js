@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5001;
 
 app.use(cors());
 
-const ALPHA_VANTAGE_API_KEY = "demo";
+const ALPHA_VANTAGE_API_KEY = "27IT5WBR1F87CUKT";
 
 // Helper function to calculate percentage change
 function calculatePercentageChange(open, close) {
