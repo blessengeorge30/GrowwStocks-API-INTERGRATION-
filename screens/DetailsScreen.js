@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 5,
+    marginTop:12
   },
   backIcon: {
     width: 18,
