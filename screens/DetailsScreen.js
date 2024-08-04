@@ -24,7 +24,7 @@ export default function DetailsScreen({ route }) {
 
   const fetchStockDetails = async (symbol) => {
 
-    // Check cache first
+    // To Check cache first
     if (cache[symbol]) {
       const cachedData = cache[symbol];
       setStockDetails(cachedData.globalQuote);
