@@ -4,10 +4,10 @@
     "slug": "Growwstocks",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logo copy.png",
+    "icon": "./assets/logoopy.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/logo copy.png",
+      "image": "./assets/logocopy.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,12 +16,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/logo copy.png",
+        "foregroundImage": "./assets/logocopy.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.blessengeorge30.Growwstocks"
     },
     "web": {
-      "favicon": "./assets/logo copy.png"
+      "favicon": "./assets/logocopy.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "884890e1-9984-4e1b-998f-c676a0b06965"
+      }
     }
   }
 }

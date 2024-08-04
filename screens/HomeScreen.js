@@ -3,7 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Linking, Swi
 import axios from "axios";
 import { useTheme } from "../ThemeContext";
 
-const ALPHA_VANTAGE_API_KEY = "demo";
+const ALPHA_VANTAGE_API_KEY = "LJTRZN7Q5GKIK2NH";
 
 export default function HomeScreen({ navigation }) {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -30,7 +30,14 @@ export default function HomeScreen({ navigation }) {
 
       const responses = await Promise.all(promises);
       const stocks = responses.map((response, index) => {
+        console.log(`Response for ${symbols[index]}:`, response.data); // Log the response
+
         const timeSeries = response.data["Time Series (Daily)"];
+
+        if (!timeSeries || Object.keys(timeSeries).length < 2) {
+          throw new Error(`Insufficient data for symbol: ${symbols[index]}`);
+        }
+
         const latestDate = Object.keys(timeSeries)[0];
         const latestData = timeSeries[latestDate];
         const previousDate = Object.keys(timeSeries)[1];
@@ -47,10 +54,23 @@ export default function HomeScreen({ navigation }) {
         };
       });
 
-      setData({ all: stocks });
+      // Sort stocks into gainers and losers
+      const gainers = stocks.filter(stock => stock.percentageChange > 0).sort((a, b) => b.percentageChange - a.percentageChange);
+      const losers = stocks.filter(stock => stock.percentageChange < 0).sort((a, b) => a.percentageChange - b.percentageChange);
+
+      setData({ all: stocks, gainers, losers });
       setFilteredData(stocks);
     } catch (error) {
-      console.error("Error fetching stock data:", error);
+      if (error.response) {
+        console.error('Error response data:', error.response.data);
+        console.error('Error response status:', error.response.status);
+        console.error('Error response headers:', error.response.headers);
+      } else if (error.request) {
+        console.error('Error request data:', error.request);
+      } else {
+        console.error('Error message:', error.message);
+      }
+      console.error('Error config:', error.config || 'No config available');
     }
   };
 
@@ -311,8 +331,8 @@ const styles = StyleSheet.create({
     marginVertical: 15,
     flexDirection: 'row',
     marginLeft: 10,
-    alignSelf:"center"
- 
+    alignSelf: "center"
+
   },
   toggleContainer: {
     flexDirection: 'row',

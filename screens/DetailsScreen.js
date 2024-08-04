@@ -28,7 +28,7 @@ export default function DetailsScreen({ route }) {
       return;
     }
 
-    const apiKey = "demo"; 
+    const apiKey = "LJTRZN7Q5GKIK2NH"; 
 
     try {
       const globalQuoteResponse = await axios.get(
@@ -144,7 +144,7 @@ export default function DetailsScreen({ route }) {
       case "IBM":
         return "IBM Corporation";
       case "META":
-        return "Meta Platforms, Inc. (formerly Facebook)";
+        return "Meta Platforms, Inc. ";
       default:
         return "Unknown Stock";
     }
