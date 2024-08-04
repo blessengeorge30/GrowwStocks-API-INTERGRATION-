@@ -313,7 +313,7 @@ export default function DetailsScreen({ route }) {
 }
 
 
-// Importing Logo Image's based on stock symbol
+// Importing Logo Image's based on stock symbol using switch statement
 const getImageSource = (symbol) => {
   switch (symbol) {
     case "AAPL":
@@ -338,7 +338,7 @@ const getImageSource = (symbol) => {
 };
 
 
-// Description of Stock's based on stock symbol
+// Description of Stock's based on stock symbol using switch statement
 const getDescription = (symbol) => {
   switch (symbol) {
     case "AAPL":
