@@ -24,7 +24,7 @@
 
 ## Introduction
 
-GROWW-ASSIGNMENT is a React Native application designed to provide users with detailed stock information. This project demonstrates the implementation of various features such as data fetching, in-memory caching, and a dark mode toggle to enhance user experience. The app uses the react-native-chart-kit library to display stock data visually.
+A React Native application designed to provide users with detailed stock information. This project demonstrates the implementation of various features such as data fetching, in-memory caching, and a dark mode toggle to enhance user experience. The app uses the react-native-chart-kit library to display stock data visually.
 ## Features
 
 - Fetches real-time stock data from an external API.
