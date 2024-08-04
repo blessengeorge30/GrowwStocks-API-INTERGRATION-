@@ -6,18 +6,26 @@ import { useTheme } from "../ThemeContext";
 const ALPHA_VANTAGE_API_KEY = "LJTRZN7Q5GKIK2NH";
 
 export default function HomeScreen({ navigation }) {
+
+  //  toggle for theme (light/dark)
   const { isDarkMode, toggleTheme } = useTheme();
+
+  // State for stock data and filtered view
   const [data, setData] = useState({ all: [], gainers: [], losers: [] });
   const [filteredData, setFilteredData] = useState([]);
   const [view, setView] = useState("all");
 
+  // Fetch stock data on component mount
   useEffect(() => {
     fetchStockData();
   }, []);
 
   const fetchStockData = async () => {
     try {
+      // List of stock symbols to fetch data 
       const symbols = ["AAPL", "GOOGL", "TSLA", "AMZN", "MSFT", "AMD", "IBM", "META"];
+    
+      // Fetch data for each symbol from the API
       const promises = symbols.map((symbol) =>
         axios.get(`https://www.alphavantage.co/query`, {
           params: {
@@ -30,19 +38,23 @@ export default function HomeScreen({ navigation }) {
 
       const responses = await Promise.all(promises);
       const stocks = responses.map((response, index) => {
-        console.log(`Response for ${symbols[index]}:`, response.data); // Log the response
+        console.log(`Response for ${symbols[index]}:`, response.data); // to Log the response
 
+        // to Parse time series data
         const timeSeries = response.data["Time Series (Daily)"];
 
+        // to Ensure there is sufficient data
         if (!timeSeries || Object.keys(timeSeries).length < 2) {
           throw new Error(`Insufficient data for symbol: ${symbols[index]}`);
         }
 
+        // to Get latest and previous day's data of 
         const latestDate = Object.keys(timeSeries)[0];
         const latestData = timeSeries[latestDate];
         const previousDate = Object.keys(timeSeries)[1];
         const previousData = timeSeries[previousDate];
 
+        // to Calculate percentage change in each stock price
         const closePrice = parseFloat(latestData["4. close"]);
         const previousClosePrice = parseFloat(previousData["4. close"]);
         const percentageChange = ((closePrice - previousClosePrice) / previousClosePrice) * 100;
@@ -54,13 +66,16 @@ export default function HomeScreen({ navigation }) {
         };
       });
 
-      // Sort stocks into gainers and losers
+      // Sort stocks into gainers and losers seperatly 
       const gainers = stocks.filter(stock => stock.percentageChange > 0).sort((a, b) => b.percentageChange - a.percentageChange);
       const losers = stocks.filter(stock => stock.percentageChange < 0).sort((a, b) => a.percentageChange - b.percentageChange);
 
       setData({ all: stocks, gainers, losers });
       setFilteredData(stocks);
     } catch (error) {
+
+
+      // Handle errors from API requests
       if (error.response) {
         console.error('Error response data:', error.response.data);
         console.error('Error response status:', error.response.status);
@@ -74,6 +89,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  // Toggle between different views (all, gainers, losers) 
   const toggleView = (selectedView) => {
     if (view === selectedView) {
       setView("all");
@@ -84,6 +100,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  // Get image(logos) based on stock symbol
   const getImageSource = (symbol) => {
     switch (symbol) {
       case "AAPL":
@@ -107,6 +124,9 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+
+
+  // Get  stock's full name based on stock symbol using switch statement
   const getStockTitle = (symbol) => {
     switch (symbol) {
       case "AAPL":
@@ -130,6 +150,7 @@ export default function HomeScreen({ navigation }) {
     }
   };
 
+  // Render individual stock's details
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={[styles.tile, isDarkMode && styles.tileDark]}
@@ -332,7 +353,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginLeft: 10,
     alignSelf: "center"
-
   },
   toggleContainer: {
     flexDirection: 'row',
