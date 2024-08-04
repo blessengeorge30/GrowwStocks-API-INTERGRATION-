@@ -4,6 +4,8 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { LineChart } from "react-native-chart-kit";
 
+
+// Cache for storing fetched stock data
 const cache = {};
 
 export default function DetailsScreen({ route }) {
@@ -18,9 +20,11 @@ export default function DetailsScreen({ route }) {
 
   useEffect(() => {
     fetchStockDetails(symbol);
-    }, [symbol]);
+  }, [symbol]);
 
   const fetchStockDetails = async (symbol) => {
+
+    // Check cache first
     if (cache[symbol]) {
       const cachedData = cache[symbol];
       setStockDetails(cachedData.globalQuote);
@@ -28,9 +32,10 @@ export default function DetailsScreen({ route }) {
       return;
     }
 
-    const apiKey = "LJTRZN7Q5GKIK2NH"; 
+    const apiKey = "LJTRZN7Q5GKIK2NH";
 
     try {
+      // Fetch global quote data
       const globalQuoteResponse = await axios.get(
         `https://www.alphavantage.co/query`,
         {
@@ -42,6 +47,8 @@ export default function DetailsScreen({ route }) {
         }
       );
 
+
+      // Fetch time series daily data
       const timeSeriesResponse = await axios.get(
         `https://www.alphavantage.co/query`,
         {
@@ -56,6 +63,8 @@ export default function DetailsScreen({ route }) {
       const globalQuote = globalQuoteResponse.data["Global Quote"];
       const timeSeriesDaily = timeSeriesResponse.data["Time Series (Daily)"];
 
+
+      // Cache the fetched data
       cache[symbol] = { globalQuote, timeSeriesDaily };
       setStockDetails(globalQuote);
       setTimeSeriesDaily(timeSeriesDaily);
@@ -64,6 +73,8 @@ export default function DetailsScreen({ route }) {
     }
   };
 
+
+  // Handle search input
   const handleSearch = () => {
     if (searchQuery.trim()) {
       setSymbol(searchQuery.trim());
@@ -72,12 +83,17 @@ export default function DetailsScreen({ route }) {
     }
   };
 
+
+  // Add search to recent searches
   const addToRecentSearches = (newSearch) => {
     setRecentSearches((prevSearches) => {
       const updatedSearches = [
         newSearch,
         ...prevSearches.filter((search) => search !== newSearch),
       ];
+
+
+      // MAXIMUM Limit upto 5 recent searches
       return updatedSearches.slice(0, 5);
     });
   };
@@ -99,6 +115,8 @@ export default function DetailsScreen({ route }) {
     );
   }
 
+  //Intergrating React-native Chart-kit library
+  // Prepare data for the chart
   const labels = Object.keys(timeSeriesDaily).reverse();
   const data = Object.values(timeSeriesDaily)
     .reverse()
@@ -127,6 +145,8 @@ export default function DetailsScreen({ route }) {
     propsForBackgroundLines: { strokeDasharray: "", stroke: "#e3e3e3" },
   };
 
+
+  // Get stock's full name based on symbol using switch statement
   const getStockTitle = (symbol) => {
     switch (symbol) {
       case "AAPL":
@@ -292,6 +312,8 @@ export default function DetailsScreen({ route }) {
   );
 }
 
+
+// Importing Logo Image's based on stock symbol
 const getImageSource = (symbol) => {
   switch (symbol) {
     case "AAPL":
@@ -315,6 +337,8 @@ const getImageSource = (symbol) => {
   }
 };
 
+
+// Description of Stock's based on stock symbol
 const getDescription = (symbol) => {
   switch (symbol) {
     case "AAPL":
