@@ -4,30 +4,33 @@
     "slug": "Growwstocks",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/logoopy.png",
+    "icon": "./assets/logocopy.png",
     "userInterfaceStyle": "light",
-    "splash": {
-      "image": "./assets/logocopy.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/logocopy.png",
-        "backgroundColor": "#ffffff"
-      },
-      "package": "com.blessengeorge30.Growwstocks"
-    },
-    "web": {
-      "favicon": "./assets/logocopy.png"
-    },
     "extra": {
       "eas": {
         "projectId": "884890e1-9984-4e1b-998f-c676a0b06965"
       }
+    },
+    "android": {
+      "package": "com.blessengeorge30.Growwstocks"
+    }
+  },
+  "ios": {
+    "supportsTablet": true
+  },
+  "android": {
+    "adaptiveIcon": {
+      "foregroundImage": "./assets/logocopy.png",
+      "backgroundColor": "#ffffff"
+    },
+    "package": "com.blessengeorge30.Growwstocks"
+  },
+  "web": {
+    "favicon": "./assets/logocopy.png"
+  },
+  "extra": {
+    "eas": {
+      "projectId": "884890e1-9984-4e1b-998f-c676a0b06965"
     }
   }
 }
