@@ -186,7 +186,7 @@ export default function HomeScreen({ navigation }) {
             ios_backgroundColor="#3e3e3e"
             style={styles.switch}
           />
-          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark</Text>
+          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Darker</Text>
         </View>
       </View>
 
