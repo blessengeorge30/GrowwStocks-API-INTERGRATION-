@@ -147,28 +147,28 @@ export default function DetailsScreen({ route }) {
 
 
   // Get stock's full name based on symbol using switch statement
-  // const getStockTitle = (symbol) => {
-  //   switch (symbol) {
-  //     case "AAPL":
-  //       return "Apple Inc.";
-  //     case "GOOGL":
-  //       return "Alphabet Inc. (Google)";
-  //     case "TSLA":
-  //       return "Tesla, Inc.";
-  //     case "AMZN":
-  //       return "Amazon.com, Inc.";
-  //     case "MSFT":
-  //       return "Microsoft Corporation";
-  //     case "AMD":
-  //       return "Advanced Micro Devices, Inc.";
-  //     case "IBM":
-  //       return "IBM Corporation";
-  //     case "META":
-  //       return "Meta Platforms, Inc. ";
-  //     default:
-  //       return "Unknown Stock";
-  //   }
-  // };
+  const getStockTitle = (symbol) => {
+    switch (symbol) {
+      case "AAPL":
+        return "Apple Inc.";
+      case "GOOGL":
+        return "Alphabet Inc. (Google)";
+      case "TSLA":
+        return "Tesla, Inc.";
+      case "AMZN":
+        return "Amazon.com, Inc.";
+      case "MSFT":
+        return "Microsoft Corporation";
+      case "AMD":
+        return "Advanced Micro Devices, Inc.";
+      case "IBM":
+        return "IBM Corporation";
+      case "META":
+        return "Meta Platforms, Inc. ";
+      default:
+        return "Unknown Stock";
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
