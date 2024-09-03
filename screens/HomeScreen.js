@@ -177,7 +177,7 @@ export default function HomeScreen({ navigation }) {
           </TouchableOpacity>
         </View>
         <View style={styles.toggleContainer}>
-          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Light mode</Text>
+          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Light</Text>
           <Switch
             value={isDarkMode}
             onValueChange={toggleTheme}
@@ -186,7 +186,7 @@ export default function HomeScreen({ navigation }) {
             ios_backgroundColor="#3e3e3e"
             style={styles.switch}
           />
-          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark mode</Text>
+          <Text style={[styles.label, isDarkMode && styles.textWhite]}>Dark </Text>
         </View>
       </View>
 
